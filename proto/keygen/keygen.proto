@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "fupi.tz/proto/keygen";
+
+message GenerateKeyRequest {
+}
+
+message GenerateKeyResponse {
+  string shortUrl = 1;
+}
+
+service Keygen {
+  rpc Generate(GenerateKeyRequest) returns (GenerateKeyResponse) {}
+}

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "fupi.tz/proto/url";
+
+message UrlType {
+  string name = 1;
+}
+
+message CreateUrlRequest {
+  string original = 1;
+  string short = 2;
+  string type = 3;
+  string customAlias = 4;
+  string password = 5;
+  string expiry_at = 6;
+  string qrcode_url = 7;
+}
+
+message CreateUrlResponse {
+  string short = 1;
+}
+
+service Url {
+  rpc Create(CreateUrlRequest) returns (CreateUrlResponse){}
+}
