@@ -1,4 +1,4 @@
-module fupi.tz
+module github.com/njunwa1/fupi.tz
 
 go 1.22
 
