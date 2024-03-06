@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/Njunwa1/proto/golang/keygen";
+option go_package = "github.com/Njunwa1/proto/keygen";
 
 message GenerateKeyRequest {
 }

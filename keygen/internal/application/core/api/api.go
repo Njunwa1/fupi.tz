@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/keygen/internal/application/core/domain"
-	"github.com/Njunwa1/fupi.tz/keygen/internal/application/core/utils"
-	"github.com/Njunwa1/fupi.tz/keygen/internal/ports"
+	"github.com/Njunwa1/keygen/internal/application/core/domain"
+	"github.com/Njunwa1/keygen/internal/application/core/utils"
+	"github.com/Njunwa1/keygen/internal/ports"
 	"time"
 )
 

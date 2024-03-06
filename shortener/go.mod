@@ -1,4 +1,4 @@
-module github.com/Njunwa1/shortener
+module github.com/Njunwa1/fupi.tz/shortener
 
 go 1.22
 

@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/keygen/internal/application/core/domain"
+	"github.com/Njunwa1/keygen/internal/application/core/domain"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
