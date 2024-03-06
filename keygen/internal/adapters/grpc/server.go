@@ -2,9 +2,9 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/njunwa1/fupi.tz/keygen/internal/ports"
-	"github.com/njunwa1/fupi.tz/proto/golang/keygen"
-	"github.com/njunwa1/fupi.tz/shortener/config"
+	"github.com/Njunwa1/fupi.tz/keygen/internal/ports"
+	"github.com/Njunwa1/fupi.tz/proto/golang/keygen"
+	"github.com/Njunwa1/fupi.tz/shortener/config"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

@@ -1,7 +1,6 @@
 FROM golang:1.18 AS builder
 WORKDIR /usr/src/app
 COPY . .
-COPY ../go.mod .
 # Copy the file from one level up to the current working directory
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o keygen ./cmd/main.go
 

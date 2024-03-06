@@ -1,4 +1,4 @@
-module github.com/njunwa1/keygen
+module github.com/Njunwa1/keygen
 
 go 1.22
 

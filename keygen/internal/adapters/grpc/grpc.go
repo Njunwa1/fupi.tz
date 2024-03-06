@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"github.com/njunwa1/fupi.tz/proto/golang/keygen"
+	"github.com/Njunwa1/fupi.tz/proto/golang/keygen"
 	"log/slog"
 )
 

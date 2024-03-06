@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/njunwa1/fupi.tz/keygen/internal/adapters/db"
-	"github.com/njunwa1/fupi.tz/keygen/internal/adapters/grpc"
-	"github.com/njunwa1/fupi.tz/keygen/internal/application/core/api"
-	"github.com/njunwa1/fupi.tz/shortener/config"
+	"github.com/Njunwa1/keygen/config"
+	"github.com/Njunwa1/keygen/internal/adapters/db"
+	"github.com/Njunwa1/keygen/internal/adapters/grpc"
+	"github.com/Njunwa1/keygen/internal/application/core/api"
 	"log/slog"
 )
 

@@ -12,7 +12,6 @@ ARG SHORTENER_SERVICE_ADDRESS
 WORKDIR /app
 COPY . .
 # Copy the file from one level up to the current working directory
-COPY ../go.mod .
 RUN go build -o ./shortener-service ./cmd/server/main.go
 RUN go build -ldflags  "-X main.shortenerServiceAddr=$SHORTENER_SERVICE_ADDRESS" -o ./gateway-service ./cmd/client/main.go
 FROM alpine:latest AS shortener-service

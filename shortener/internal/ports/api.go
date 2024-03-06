@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"github.com/njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"github.com/Njunwa1/shortener/internal/application/core/domain"
 )
 
 type APIPort interface {

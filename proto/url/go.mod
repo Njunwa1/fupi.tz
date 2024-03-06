@@ -1,3 +1,3 @@
-module github.com/njunwa1/fupi.tz/proto/url
+module github.com/Njunwa1/proto/url
 
 go 1.22.0

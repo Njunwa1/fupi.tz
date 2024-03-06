@@ -1,11 +1,11 @@
 package server
 
 import (
-	"github.com/njunwa1/fupi.tz/shortener/config"
-	"github.com/njunwa1/fupi.tz/shortener/internal/adapters/db"
-	"github.com/njunwa1/fupi.tz/shortener/internal/adapters/grpc"
-	"github.com/njunwa1/fupi.tz/shortener/internal/adapters/keygen"
-	"github.com/njunwa1/fupi.tz/shortener/internal/application/core/api"
+	"github.com/Njunwa1/fupi.tz/shortener/config"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/adapters/db"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/adapters/grpc"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/adapters/keygen"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/api"
 	"log"
 )
 

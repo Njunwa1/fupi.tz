@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"github.com/njunwa1/fupi.tz/keygen/internal/application/core/domain"
+	"github.com/Njunwa1/fupi.tz/keygen/internal/application/core/domain"
 )
 
 type DBPort interface {

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/njunwa1/fupi.tz/proto/golang/url";
+option go_package = "github.com/Njunwa1/proto/golang/url";
 import "google/api/annotations.proto";
 
 message UrlType {

@@ -2,8 +2,8 @@ package api
 
 import (
 	"context"
-	"github.com/njunwa1/fupi.tz/shortener/internal/application/core/domain"
-	"github.com/njunwa1/fupi.tz/shortener/internal/ports"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
 )
 
 type Application struct {

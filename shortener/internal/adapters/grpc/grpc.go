@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"context"
-	"github.com/njunwa1/fupi.tz/proto/golang/url"
-	"github.com/njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"github.com/Njunwa1/fupi.tz/proto/golang/url"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
 	"log/slog"
 	"time"
 )
