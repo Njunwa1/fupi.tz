@@ -1,14 +1,11 @@
-module fupi.tz
+module github.com/njunwa1/keygen
 
 go 1.22
 
 require (
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	go.mongodb.org/mongo-driver v1.14.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.49.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240228224816-df926f6c8641
 	google.golang.org/grpc v1.62.1
-	google.golang.org/protobuf v1.33.0
 )
 
 require (
@@ -25,10 +22,10 @@ require (
 	go.opentelemetry.io/otel v1.24.0 // indirect
 	go.opentelemetry.io/otel/metric v1.24.0 // indirect
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
-	golang.org/x/crypto v0.19.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240228224816-df926f6c8641 // indirect
 )

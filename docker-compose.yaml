@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  shortener-service:
+    image: shortener-service
+    build:
+      context: ./shortener
+      dockerfile: Dockerfile
+    ports:
+      - '50051:50051'
+    environment:
+        - APPLICATION_PORT=50051
+        - DATA_SOURCE_URL=mongodb://fupi.tz:12345678@mongodb:27017/fupi.tz
+        - KEYGEN_SERVICE_URL=keygen-service:50052
+    depends_on:
+      - mongodb
+  keygen-service:
+    image: keygen-service
+    build:
+      context: ./keygen
+      dockerfile: Dockerfile
+    ports:
+      - '50052:50052'
+    environment:
+        - APPLICATION_PORT=50052
+        - DATA_SOURCE_URL=mongodb://fupi.tz:12345678@mongodb:27017/fupi.tz
+    depends_on:
+      - mongodb
+  gateway-service:
+    image: gateway-service
+    build:
+      context: ./shortener
+      dockerfile: Dockerfile
+      args:
+        SHORTENER_SERVICE_ADDRESS: shortener-service:50051
+    ports:
+      - '8080:8080'
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: fupi.tz
+      MONGO_INITDB_ROOT_PASSWORD: 12345678
+      MONGO_INITDB_DATABASE: fupi.tz
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shortener
+  labels:
+    app: shortener
+spec:
+  replicas: 2
+  Selector:
+    matchLabels:
+      app: shortener
+  template:
+    metadata:
+      labels:
+        app: shortener
+    spec:
+      containers:
+        - name: shortener
+          image: huseyinbabal/payment:v1.0.2
+          env:
+            - name: APPLICATION_PORT
+              value: "8081"
+            - name: DATA_SOURCE_URL
+              value: "root:changeit@tcp(mysql:3306)/urls
+---
+
+# Path: shortener/Service.yaml
+Service:
+  Type: ClusterIP
+  Metadata:
+    Name: shortener
+    Namespace: default
+  Spec:
+    Selector:
+      App: shortener
+    Ports:
+      - Protocol: TCP
+        Port: 80
+        TargetPort: 8080

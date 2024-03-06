@@ -1,11 +1,11 @@
-package cmd
+package server
 
 import (
-	"fupi.tz/shortener/config"
-	"fupi.tz/shortener/internal/adapters/db"
-	"fupi.tz/shortener/internal/adapters/grpc"
-	"fupi.tz/shortener/internal/adapters/keygen"
-	"fupi.tz/shortener/internal/application/core/api"
+	"github.com/njunwa1/fupi.tz/shortener/config"
+	"github.com/njunwa1/fupi.tz/shortener/internal/adapters/db"
+	"github.com/njunwa1/fupi.tz/shortener/internal/adapters/grpc"
+	"github.com/njunwa1/fupi.tz/shortener/internal/adapters/keygen"
+	"github.com/njunwa1/fupi.tz/shortener/internal/application/core/api"
 	"log"
 )
 

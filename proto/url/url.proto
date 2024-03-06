@@ -1,8 +1,7 @@
 syntax = "proto3";
 
-option go_package = "fupi.tz/proto/url";
+option go_package = "github.com/njunwa1/fupi.tz/proto/golang/url";
 import "google/api/annotations.proto";
-import "google/api/date.proto";
 
 message UrlType {
   string name = 1;
@@ -25,8 +24,9 @@ message CreateUrlResponse {
 service Url {
   rpc Create(CreateUrlRequest) returns (CreateUrlResponse){
     option (google.api.http) = {
-      post: "/url/create"
+      post: "/api/v1/url/create"
       body: "*"
     };
   }
 }
+
