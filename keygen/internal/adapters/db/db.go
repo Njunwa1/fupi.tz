@@ -10,10 +10,11 @@ import (
 )
 
 type Adapter struct {
-	client *mongo.Client
+	Client *mongo.Client
 }
 
 func NewAdapter(dataSourceUrl string) (*Adapter, error) {
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -24,22 +25,23 @@ func NewAdapter(dataSourceUrl string) (*Adapter, error) {
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to connect to database: %s", err)
 		return nil, err
 	}
 
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
+	//ping the database
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatalf("Error while pinging DB: %s", err)
+	}
+	log.Println("Connected to MongoDB: ", dataSourceUrl)
 
-	return &Adapter{client: client}, nil
+	return &Adapter{Client: client}, nil
 }
 
 // SaveShortUrlKey implicitly implements the DBPort interface
 func (a *Adapter) SaveShortUrlKey(ctx context.Context, entry domain.KeyGenLogEntry) error {
-	collection := a.client.Database("fupi.tz").Collection("keygen")
+	collection := a.Client.Database("fupitz").Collection("keygen")
 	_, err := collection.InsertOne(ctx, entry)
 	if err != nil {
 		return err

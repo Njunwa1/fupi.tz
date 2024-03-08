@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/proto/golang/url"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"github.com/Njunwa1/fupi.tz/shortener/proto/golang/url"
 	"log/slog"
 	"time"
 )
@@ -18,7 +18,9 @@ func (a Adapter) Create(ctx context.Context, request *url.CreateUrlRequest) (*ur
 		request.CustomAlias,
 		request.Password,
 		request.QrcodeUrl,
-		request.Original,
+		request.WebUrl,
+		request.AppleUrl,
+		request.AndroidUrl,
 		expiryAt,
 	) //returns an address
 	result, err := a.api.CreateShortUrl(ctx, *newUrl)

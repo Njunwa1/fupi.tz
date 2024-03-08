@@ -7,7 +7,9 @@ type UrlType struct {
 }
 
 type Url struct {
-	Original    string
+	WebUrl      string
+	AndroidUrl  string
+	IOSUrl      string
 	Short       string
 	UserID      int64
 	UrlType     UrlType
@@ -17,9 +19,11 @@ type Url struct {
 	QrCodeUrl   string
 }
 
-func NewUrl(userID int64, urlType UrlType, customAlias, password, qrCodeUrl, original string, expiryAt time.Time) *Url {
+func NewUrl(userID int64, urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, androidUrl string, expiryAt time.Time) *Url {
 	return &Url{
-		Original:    original,
+		WebUrl:      webUrl,
+		AndroidUrl:  androidUrl,
+		IOSUrl:      iOSUrl,
 		UserID:      userID,
 		UrlType:     urlType,
 		CustomAlias: customAlias,

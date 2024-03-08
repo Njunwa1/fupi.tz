@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+option go_package = "github.com/Njunwa1/fupi.tz/redirect/proto/clicks";
+
+import "google/api/annotations.proto";
+
+message Click {
+  string urlID = 1;
+  string userAgent = 2;
+  string ipAddress = 3;
+  string referrer = 4;
+  string deviceType = 5;
+  string browser = 6;
+  string os = 7;
+  string country = 8;
+  string city = 9;
+  float latitude = 10;
+  float longitude = 11;
+}
+
+message Clicks {
+  repeated Click clicks = 1;
+}
+
+message UrlClickRequest {
+  string urlID = 1;
+  string userAgent = 2;
+  string ipAddress = 3;
+  string referrer = 4;
+  string deviceType = 5;
+  string browser = 6;
+  string os = 7;
+  string country = 8;
+  string city = 9;
+  float latitude = 10;
+  float longitude = 11;
+  string shortUrl = 12;
+}
+
+
+message UrlClickResponse {
+  string id = 1;
+  string shortUrl = 2;
+  string webUrl = 3;
+  string iosUrl = 4;
+  string androidUrl = 5;
+  string password = 6;
+  string expiryAt = 7;
+  string customAlias = 8;
+  string type = 9;
+}
+
+service SaveClicks {
+  rpc CreateUrlClick(UrlClickRequest) returns (UrlClickResponse){
+    option (google.api.http) = {
+      get: "/api/v1/url/get/{shortUrl}"
+    };
+  }
+}
+
+

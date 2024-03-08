@@ -7,4 +7,5 @@ import (
 
 type DBPort interface {
 	SaveUrl(context.Context, domain.Url) error
+	GetUrlByShortUrl(context.Context, string) (domain.Url, error)
 }

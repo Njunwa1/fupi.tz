@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/Njunwa1/fupi.tz/proto/golang/url"
+	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -15,9 +15,12 @@ var shortenerServiceAddr string
 
 func main() {
 	// Set up a connection to the shortener server.
-	conn, err := grpc.Dial(shortenerServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	serverAddr := "localhost:50051"
+
+	log.Print(shortenerServiceAddr)
+	conn, err := grpc.Dial(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("could not connect to order service: %v", err)
+		log.Fatalf("could not connect to shortener service: %v", err)
 	}
 	defer conn.Close()
 	// Register gRPC server endpoint

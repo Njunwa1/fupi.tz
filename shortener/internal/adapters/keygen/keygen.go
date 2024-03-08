@@ -2,9 +2,11 @@ package keygen
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/proto/golang/keygen"
+	"fmt"
+	"github.com/Njunwa1/fupi.tz-proto/golang/keygen"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"log"
 )
 
 type Adapter struct {
@@ -16,7 +18,7 @@ func NewAdapter(keygenServiceUrl string) *Adapter {
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	conn, err := grpc.Dial(keygenServiceUrl, opts...)
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed to dial: %v", err)
 	}
 	client := keygen.NewKeygenClient(conn)
 	return &Adapter{keygen: client}
@@ -24,7 +26,9 @@ func NewAdapter(keygenServiceUrl string) *Adapter {
 
 func (a *Adapter) GenerateShortUrlKey(ctx context.Context) (string, error) {
 	resp, err := a.keygen.Generate(ctx, &keygen.GenerateKeyRequest{})
+	fmt.Println(resp)
 	if err != nil {
+		log.Fatalf("failed to generate key: %v", err)
 		return "", err
 	}
 	return resp.ShortUrl, nil

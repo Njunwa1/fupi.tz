@@ -2,19 +2,24 @@ version: '3.8'
 services:
   shortener-service:
     image: shortener-service
+    container_name: shortener-service
     build:
       context: ./shortener
       dockerfile: Dockerfile
+      target: shortener-service
     ports:
-      - '50051:50051'
+      - '50051/tcp'
     environment:
         - APPLICATION_PORT=50051
-        - DATA_SOURCE_URL=mongodb://fupi.tz:12345678@mongodb:27017/fupi.tz
+        - DATA_SOURCE_URL=mongodb://fupitz:12345678@mongodb:27017/fupitz?authMechanism=SCRAM-SHA-1
         - KEYGEN_SERVICE_URL=keygen-service:50052
+        - ENV=development
     depends_on:
       - mongodb
+      - keygen-service
   keygen-service:
     image: keygen-service
+    container_name: keygen-service
     build:
       context: ./keygen
       dockerfile: Dockerfile
@@ -22,14 +27,17 @@ services:
       - '50052:50052'
     environment:
         - APPLICATION_PORT=50052
-        - DATA_SOURCE_URL=mongodb://fupi.tz:12345678@mongodb:27017/fupi.tz
+        - DATA_SOURCE_URL=mongodb://fupitz:12345678@mongodb:27017/fupitz?authMechanism=SCRAM-SHA-1
+        - ENV=development
     depends_on:
       - mongodb
   gateway-service:
     image: gateway-service
+    container_name: gateway-service
     build:
       context: ./shortener
       dockerfile: Dockerfile
+      target: gateway-service
       args:
         SHORTENER_SERVICE_ADDRESS: shortener-service:50051
     ports:
@@ -38,13 +46,12 @@ services:
     image: mongo:latest
     container_name: mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: fupi.tz
+      MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 12345678
-      MONGO_INITDB_DATABASE: fupi.tz
     ports:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-
+      - "./mongo-entrypoint/:/docker-entrypoint-initdb.d/"
 volumes:
   mongodb_data:

@@ -2,10 +2,9 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/Njunwa1/fupi.tz/proto/golang/url"
+	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 	"github.com/Njunwa1/fupi.tz/shortener/config"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -26,14 +25,12 @@ func NewAdapter(api ports.APIPort, port int) *Adapter {
 func (a Adapter) Run() {
 	var err error
 
-	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", a.port))
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", a.port))
 	if err != nil {
 		log.Fatalf("failed to listen on port %d, error: %v", a.port, err)
 	}
 
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()),
-	)
+	grpcServer := grpc.NewServer()
 	a.server = grpcServer
 	url.RegisterUrlServer(grpcServer, a)
 

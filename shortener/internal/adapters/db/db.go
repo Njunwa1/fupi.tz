@@ -10,7 +10,7 @@ import (
 )
 
 type Adapter struct {
-	client *mongo.Client
+	Client *mongo.Client
 }
 
 func NewAdapter(dataSourceUrl string) (*Adapter, error) {
@@ -25,24 +25,35 @@ func NewAdapter(dataSourceUrl string) (*Adapter, error) {
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to connect to database: %s", err)
 		return nil, err
 	}
 
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
+	//ping the database
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatalf("Error while pinging DB: %s", err)
+	}
+	log.Println("Connected to MongoDB: ", dataSourceUrl)
 
-	return &Adapter{client: client}, nil
+	return &Adapter{Client: client}, nil
 }
 
 func (a *Adapter) SaveUrl(ctx context.Context, url domain.Url) error {
-	collection := a.client.Database("fupi.tz").Collection("urls")
+	collection := a.Client.Database("fupitz").Collection("urls")
 	_, err := collection.InsertOne(ctx, url)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (a *Adapter) GetUrlByShortUrl(ctx context.Context, shortUrl string) (domain.Url, error) {
+	collection := a.Client.Database("fupitz").Collection("urls")
+	var result domain.Url
+	err := collection.FindOne(ctx, domain.Url{Short: shortUrl}).Decode(&result)
+	if err != nil {
+		return domain.Url{}, err
+	}
+	return result, nil
 }

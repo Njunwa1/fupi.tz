@@ -5,7 +5,6 @@ import (
 	"github.com/Njunwa1/keygen/internal/application/core/domain"
 	"github.com/Njunwa1/keygen/internal/application/core/utils"
 	"github.com/Njunwa1/keygen/internal/ports"
-	"time"
 )
 
 const keyOutputLength = 7
@@ -20,10 +19,8 @@ func NewApplication(db ports.DBPort) *Application {
 
 // GenerateShortUrlKey implements the APIPort interface
 func (a *Application) GenerateShortUrlKey(ctx context.Context) (domain.KeyGenLogEntry, error) {
-	entry := domain.KeyGenLogEntry{
-		ShortUrl:  utils.GenerateKey(keyOutputLength),
-		CreatedAt: time.Now(),
-	}
+	shortUrl := utils.GenerateKey(keyOutputLength)
+	entry := domain.NewKeygenLogEntry(shortUrl)
 	err := a.db.SaveShortUrlKey(ctx, entry)
 	if err != nil {
 		return domain.KeyGenLogEntry{}, err
