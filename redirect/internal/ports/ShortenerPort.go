@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/redirect/proto/golang/url"
+	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 )
 
 type ShortenerPort interface {

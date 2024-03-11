@@ -2,7 +2,7 @@ package shortener
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/redirect/proto/golang/url"
+	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"

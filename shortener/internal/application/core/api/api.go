@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
 	"log"
@@ -29,5 +30,11 @@ func (a *Application) CreateShortUrl(ctx context.Context, url domain.Url) (domai
 }
 
 func (a *Application) GetUrlByShortUrl(ctx context.Context, shortUrl string) (domain.Url, error) {
-	return a.db.GetUrlByShortUrl(ctx, shortUrl)
+	url, err := a.db.GetUrlByShortUrl(ctx, shortUrl)
+	fmt.Println("URL from database", url)
+	if err != nil {
+		log.Println("Failed to get url from database: ", err)
+		return domain.Url{}, err
+	}
+	return url, nil
 }

@@ -50,7 +50,7 @@ message UrlClickResponse {
   string type = 9;
 }
 
-service SaveClicks {
+service UrlClicks {
   rpc CreateUrlClick(UrlClickRequest) returns (UrlClickResponse){
     option (google.api.http) = {
       get: "/api/v1/url/get/{shortUrl}"

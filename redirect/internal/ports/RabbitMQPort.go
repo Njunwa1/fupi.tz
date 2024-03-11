@@ -1,0 +1,11 @@
+package ports
+
+import (
+	"context"
+	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
+)
+import "google.golang.org/grpc/metadata"
+
+type RabbitMQPort interface {
+	PublishClickEvent(ctx context.Context, urlClick *clicks.UrlClickRequest, md metadata.MD) error
+}

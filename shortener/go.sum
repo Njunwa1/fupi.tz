@@ -1,9 +1,7 @@
-github.com/Njunwa1/fupi.tz-proto/golang/keygen v1.1.0 h1:8lqNm4hE4Z8S49WD+ckAiTc2sF2zGjnP55R5INutwRU=
-github.com/Njunwa1/fupi.tz-proto/golang/keygen v1.1.0/go.mod h1:i3rrIlddAO0tPvKU54DsVUkWwCAM5xXb2reZEEg+FCQ=
-github.com/Njunwa1/fupi.tz-proto/golang/url v1.1.1 h1:jCliyu56R29yYkESHexeYqtIi2Yuf+R4lg45iHLg4s4=
-github.com/Njunwa1/fupi.tz-proto/golang/url v1.1.1/go.mod h1:MeKeKaWdqsP+NmEpKIZk8oMR8shlz+gNQFADeQWulp0=
-github.com/Njunwa1/fupi.tz/proto/golang/url v0.0.0-20240306112830-07e07ec3a21c h1:F5N1yrb9CRMpmWdcKFNc2sjyAOREn6i9XHB5hGAHoTk=
-github.com/Njunwa1/fupi.tz/proto/golang/url v0.0.0-20240306112830-07e07ec3a21c/go.mod h1:8TKic6ZhZFZtrhLosl2JLvoWDVbhn1Wz/Qu0A/nA0pg=
+github.com/Njunwa1/fupi.tz-proto/golang/keygen v1.1.2 h1:5BMCdfiNi+Sz26b+rpSMlG1n5rYdrMqwWtWIxfVZITI=
+github.com/Njunwa1/fupi.tz-proto/golang/keygen v1.1.2/go.mod h1:i3rrIlddAO0tPvKU54DsVUkWwCAM5xXb2reZEEg+FCQ=
+github.com/Njunwa1/fupi.tz-proto/golang/url v1.1.2 h1:L20kxRI+gAGgIeR1Hcmaz1hUbLD3p+LF3LxYW5qP68c=
+github.com/Njunwa1/fupi.tz-proto/golang/url v1.1.2/go.mod h1:MeKeKaWdqsP+NmEpKIZk8oMR8shlz+gNQFADeQWulp0=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=

@@ -37,6 +37,15 @@ func getEnvironmentValue(key string) string {
 	if os.Getenv(key) == "" {
 		log.Fatalf("%s environment variable is missing.", key)
 	}
-
 	return os.Getenv(key)
+}
+
+func GetRedisURL() string {
+	//return getEnvironmentValue("REDIS_URL")
+	return "localhost:6379"
+}
+
+func GetRabbitMQURL() string {
+	//return getEnvironmentValue("RABBITMQ_URL")
+	return "amqp://localhost:5672"
 }

@@ -3,18 +3,25 @@ module github.com/Njunwa1/fupi.tz/redirect
 go 1.22.0
 
 require (
-	github.com/Njunwa1/fupi.tz/proto/golang/url v0.0.0-20240306112830-07e07ec3a21c
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
+	github.com/Njunwa1/fupi.tz-proto/golang/clicks v1.1.4
+	github.com/Njunwa1/fupi.tz-proto/golang/url v1.1.2
+	github.com/mssola/useragent v1.0.0
+	github.com/oschwald/geoip2-golang v1.9.0
+	github.com/redis/go-redis/v9 v9.5.1
 	go.mongodb.org/mongo-driver v1.14.0
 	google.golang.org/grpc v1.62.1
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/julienschmidt/httprouter v1.3.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
+	github.com/oschwald/maxminddb-golang v1.11.0 // indirect
+	github.com/rabbitmq/amqp091-go v1.9.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
@@ -24,8 +31,7 @@ require (
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto v0.0.0-20240123012728-ef4313101c80 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240125205218-1f4bbc51befe // indirect
-	google.golang.org/protobuf v1.32.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240304212257-790db918fca8 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240228224816-df926f6c8641 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 )

@@ -19,89 +19,89 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	SaveClicks_CreateUrlClick_FullMethodName = "/SaveClicks/CreateUrlClick"
+	UrlClicks_CreateUrlClick_FullMethodName = "/UrlClicks/CreateUrlClick"
 )
 
-// SaveClicksClient is the client API for SaveClicks service.
+// UrlClicksClient is the client API for UrlClicks service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type SaveClicksClient interface {
+type UrlClicksClient interface {
 	CreateUrlClick(ctx context.Context, in *UrlClickRequest, opts ...grpc.CallOption) (*UrlClickResponse, error)
 }
 
-type saveClicksClient struct {
+type urlClicksClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewSaveClicksClient(cc grpc.ClientConnInterface) SaveClicksClient {
-	return &saveClicksClient{cc}
+func NewUrlClicksClient(cc grpc.ClientConnInterface) UrlClicksClient {
+	return &urlClicksClient{cc}
 }
 
-func (c *saveClicksClient) CreateUrlClick(ctx context.Context, in *UrlClickRequest, opts ...grpc.CallOption) (*UrlClickResponse, error) {
+func (c *urlClicksClient) CreateUrlClick(ctx context.Context, in *UrlClickRequest, opts ...grpc.CallOption) (*UrlClickResponse, error) {
 	out := new(UrlClickResponse)
-	err := c.cc.Invoke(ctx, SaveClicks_CreateUrlClick_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UrlClicks_CreateUrlClick_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// SaveClicksServer is the server API for SaveClicks service.
-// All implementations must embed UnimplementedSaveClicksServer
+// UrlClicksServer is the server API for UrlClicks service.
+// All implementations must embed UnimplementedUrlClicksServer
 // for forward compatibility
-type SaveClicksServer interface {
+type UrlClicksServer interface {
 	CreateUrlClick(context.Context, *UrlClickRequest) (*UrlClickResponse, error)
-	mustEmbedUnimplementedSaveClicksServer()
+	mustEmbedUnimplementedUrlClicksServer()
 }
 
-// UnimplementedSaveClicksServer must be embedded to have forward compatible implementations.
-type UnimplementedSaveClicksServer struct {
+// UnimplementedUrlClicksServer must be embedded to have forward compatible implementations.
+type UnimplementedUrlClicksServer struct {
 }
 
-func (UnimplementedSaveClicksServer) CreateUrlClick(context.Context, *UrlClickRequest) (*UrlClickResponse, error) {
+func (UnimplementedUrlClicksServer) CreateUrlClick(context.Context, *UrlClickRequest) (*UrlClickResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUrlClick not implemented")
 }
-func (UnimplementedSaveClicksServer) mustEmbedUnimplementedSaveClicksServer() {}
+func (UnimplementedUrlClicksServer) mustEmbedUnimplementedUrlClicksServer() {}
 
-// UnsafeSaveClicksServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to SaveClicksServer will
+// UnsafeUrlClicksServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UrlClicksServer will
 // result in compilation errors.
-type UnsafeSaveClicksServer interface {
-	mustEmbedUnimplementedSaveClicksServer()
+type UnsafeUrlClicksServer interface {
+	mustEmbedUnimplementedUrlClicksServer()
 }
 
-func RegisterSaveClicksServer(s grpc.ServiceRegistrar, srv SaveClicksServer) {
-	s.RegisterService(&SaveClicks_ServiceDesc, srv)
+func RegisterUrlClicksServer(s grpc.ServiceRegistrar, srv UrlClicksServer) {
+	s.RegisterService(&UrlClicks_ServiceDesc, srv)
 }
 
-func _SaveClicks_CreateUrlClick_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UrlClicks_CreateUrlClick_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UrlClickRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SaveClicksServer).CreateUrlClick(ctx, in)
+		return srv.(UrlClicksServer).CreateUrlClick(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SaveClicks_CreateUrlClick_FullMethodName,
+		FullMethod: UrlClicks_CreateUrlClick_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SaveClicksServer).CreateUrlClick(ctx, req.(*UrlClickRequest))
+		return srv.(UrlClicksServer).CreateUrlClick(ctx, req.(*UrlClickRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// SaveClicks_ServiceDesc is the grpc.ServiceDesc for SaveClicks service.
+// UrlClicks_ServiceDesc is the grpc.ServiceDesc for UrlClicks service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var SaveClicks_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "SaveClicks",
-	HandlerType: (*SaveClicksServer)(nil),
+var UrlClicks_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "UrlClicks",
+	HandlerType: (*UrlClicksServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateUrlClick",
-			Handler:    _SaveClicks_CreateUrlClick_Handler,
+			Handler:    _UrlClicks_CreateUrlClick_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

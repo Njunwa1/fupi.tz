@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -51,7 +52,8 @@ func (a *Adapter) SaveUrl(ctx context.Context, url domain.Url) error {
 func (a *Adapter) GetUrlByShortUrl(ctx context.Context, shortUrl string) (domain.Url, error) {
 	collection := a.Client.Database("fupitz").Collection("urls")
 	var result domain.Url
-	err := collection.FindOne(ctx, domain.Url{Short: shortUrl}).Decode(&result)
+	filter := bson.D{{"short", shortUrl}}
+	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return domain.Url{}, err
 	}

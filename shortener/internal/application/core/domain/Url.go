@@ -1,12 +1,15 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type UrlType struct {
 	Name string
 }
 
 type Url struct {
+	Id          string `json:"id" bson:"_id,omitempty"`
 	WebUrl      string
 	AndroidUrl  string
 	IOSUrl      string

@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/Njunwa1/fupi.tz/proto/golang/url"
+	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
 	"github.com/Njunwa1/fupi.tz/redirect/internal/ports"
 	"google.golang.org/grpc"
 	"log"
@@ -13,7 +13,7 @@ type Adapter struct {
 	api    ports.APIPort
 	port   int
 	server *grpc.Server
-	url.UnimplementedUrlServer
+	clicks.UnimplementedUrlClicksServer
 }
 
 func NewAdapter(api ports.APIPort, port int) *Adapter {
@@ -27,7 +27,7 @@ func (a Adapter) Run() {
 	}
 	server := grpc.NewServer()
 	a.server = server
-	url.RegisterUrlServer(server, a)
+	clicks.RegisterUrlClicksServer(server, a)
 
 	log.Printf("starting url service on port %d ...", a.port)
 	if err := server.Serve(conn); err != nil {

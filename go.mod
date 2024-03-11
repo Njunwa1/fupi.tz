@@ -3,7 +3,12 @@ module github.com/Njunwa1/fupi.tz
 go 1.22.0
 
 require (
-	github.com/Njunwa1/fupi.tz/proto/golang/url v0.0.0-20240306112830-07e07ec3a21c
+	github.com/Njunwa1/fupi.tz-proto/golang/clicks v1.1.4
+	github.com/Njunwa1/fupi.tz-proto/golang/url v1.1.2
+	github.com/Njunwa1/fupi.tz/redirect v0.0.0-20240308111445-39d40109ee41
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
+	github.com/mssola/useragent v1.0.0
+	github.com/oschwald/geoip2-golang v1.9.0
 	go.mongodb.org/mongo-driver v1.14.0
 	google.golang.org/grpc v1.62.1
 )
@@ -11,9 +16,9 @@ require (
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
+	github.com/oschwald/maxminddb-golang v1.11.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
