@@ -32,13 +32,13 @@ func NewAdapter(rabbitUrl string, db ports.DBPort) *Adapter {
 	return &Adapter{conn: conn, db: db}
 }
 
-func (a *Adapter) initChannel() (*amqp.Channel, error) {
+func (a *Adapter) InitChannel() (*amqp.Channel, error) {
 	return a.conn.Channel()
 }
 
 func (a *Adapter) ConsumeClickEvent() error {
 
-	ch, err := a.initChannel()
+	ch, err := a.InitChannel()
 	if err != nil {
 		slog.Error("Amq failed to init channel", "err", err)
 		return err
@@ -93,7 +93,7 @@ func (a *Adapter) ConsumeClickEvent() error {
 				messageChannel <- message
 			}
 			// Acknowledge the message
-			msg.Ack(false)
+			_ = msg.Ack(false)
 		}
 		close(messageChannel) // Close the channel when no more messages are expected
 	}()
