@@ -1,9 +1,12 @@
 package domain
 
-import "time"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
 
 type UrlClick struct {
-	UrlID      string
+	UrlID      *primitive.ObjectID `bson:"urlid,omitempty"`
 	UserAgent  string
 	IPAddress  string
 	Referrer   string  // Referring URL
@@ -17,9 +20,9 @@ type UrlClick struct {
 	CreatedAt  time.Time
 }
 
-func NewUrlClick(urlID, userAgent, ipAddress, referrer, deviceType, browser, os, country, city string, latitude, longitude float64) UrlClick {
+func NewUrlClick(urlID primitive.ObjectID, userAgent, ipAddress, referrer, deviceType, browser, os, country, city string, latitude, longitude float64) UrlClick {
 	return UrlClick{
-		UrlID:      urlID,
+		UrlID:      &urlID,
 		UserAgent:  userAgent,
 		IPAddress:  ipAddress,
 		Referrer:   referrer,

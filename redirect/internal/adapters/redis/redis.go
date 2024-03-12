@@ -4,9 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
 	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"log/slog"
+	"time"
 )
 
 type Adapter struct {
@@ -27,14 +30,14 @@ func NewAdapter(dataSourceUrl string) *Adapter {
 	return &Adapter{Client: client}
 }
 
-func (a *Adapter) GetUrl(ctx context.Context, shortKey string) (*url.CreateUrlResponse, error) {
+func (a *Adapter) GetUrl(ctx context.Context, shortKey string) (*clicks.UrlClickResponse, error) {
 	val, err := a.Client.HGet(ctx, shortKey, shortKey).Result()
 
 	if err != nil {
 		return nil, err
 	}
 
-	var response url.CreateUrlResponse
+	var response clicks.UrlClickResponse
 	err = json.Unmarshal([]byte(val), &response)
 	if err != nil {
 		log.Fatalf("Error while unmarshaling %s", err)
@@ -51,6 +54,13 @@ func (a *Adapter) SetUrl(ctx context.Context, shortKey string, url *url.CreateUr
 	err = a.Client.HSet(ctx, shortKey, shortKey, jsonData).Err()
 	if err != nil {
 		return err
+	}
+
+	// Set expiration for the entire hash
+	expiration := 10 * time.Minute
+	err = a.Client.Expire(ctx, shortKey, expiration).Err()
+	if err != nil {
+		slog.Error("Error while setting expiry day", "err", err)
 	}
 	return nil
 }

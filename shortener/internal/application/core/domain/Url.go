@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
@@ -9,12 +10,12 @@ type UrlType struct {
 }
 
 type Url struct {
-	Id          string `json:"id" bson:"_id,omitempty"`
+	Id          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	WebUrl      string
 	AndroidUrl  string
 	IOSUrl      string
 	Short       string
-	UserID      int64
+	UserID      *primitive.ObjectID `json:"user_id" bson:"user_id,omitempty"`
 	UrlType     UrlType
 	CustomAlias string
 	Password    string
@@ -22,12 +23,12 @@ type Url struct {
 	QrCodeUrl   string
 }
 
-func NewUrl(userID int64, urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, androidUrl string, expiryAt time.Time) *Url {
+func NewUrl(urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, androidUrl string, userID primitive.ObjectID, expiryAt time.Time) *Url {
 	return &Url{
 		WebUrl:      webUrl,
 		AndroidUrl:  androidUrl,
 		IOSUrl:      iOSUrl,
-		UserID:      userID,
+		UserID:      &userID,
 		UrlType:     urlType,
 		CustomAlias: customAlias,
 		Password:    password,

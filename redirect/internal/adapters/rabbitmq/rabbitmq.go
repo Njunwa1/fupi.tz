@@ -8,17 +8,25 @@ import (
 	"google.golang.org/grpc/metadata"
 	"log"
 	"log/slog"
+	"os"
 )
 
 type Adapter struct {
 	conn *amqp.Connection
 }
 
+type payload struct {
+	Request  *clicks.UrlClickRequest `json:"request"`
+	Metadata metadata.MD             `json:"metadata"`
+}
+
 func NewAdapter(rabbitUrl string) *Adapter {
 	conn, err := amqp.Dial(rabbitUrl)
 	if err != nil {
 		log.Printf("Cannot dial amqp %s", err)
+		os.Exit(1)
 	}
+	slog.Info("Connected to RabbitMQ", "url", rabbitUrl)
 	return &Adapter{conn: conn}
 }
 
@@ -48,13 +56,9 @@ func (a *Adapter) PublishClickEvent(ctx context.Context, request *clicks.UrlClic
 		return err
 	}
 
-	type payload struct {
-		request  *clicks.UrlClickRequest
-		metadata metadata.MD
-	}
 	body := payload{
-		request:  request,
-		metadata: md,
+		Request:  request,
+		Metadata: md,
 	}
 
 	// Convert struct to JSON
@@ -63,6 +67,7 @@ func (a *Adapter) PublishClickEvent(ctx context.Context, request *clicks.UrlClic
 		slog.Error("Failed to marshal JSON: %v", err)
 		return err
 	}
+	slog.Info("Publishing JSON Data to RabbitMQ", "data", jsonData)
 
 	err = ch.PublishWithContext(ctx,
 		"",     // exchange

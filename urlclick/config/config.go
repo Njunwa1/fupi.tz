@@ -38,5 +38,5 @@ func getEnvironmentValue(key string) string {
 
 func GetRabbitMQURL() string {
 	//return getEnvironmentValue("RABBITMQ_URL")
-	return "amqp://localhost:5672"
+	return "amqp://guest:guest@localhost:5672/"
 }

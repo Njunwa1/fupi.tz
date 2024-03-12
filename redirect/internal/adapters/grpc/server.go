@@ -25,12 +25,12 @@ func (a Adapter) Run() {
 	if err != nil {
 		log.Fatalf("failed to listen on port %d, error: %v", a.port, err)
 	}
-	server := grpc.NewServer()
-	a.server = server
-	clicks.RegisterUrlClicksServer(server, a)
+	grpcServer := grpc.NewServer()
+	a.server = grpcServer
+	clicks.RegisterUrlClicksServer(grpcServer, a)
 
 	log.Printf("starting url service on port %d ...", a.port)
-	if err := server.Serve(conn); err != nil {
+	if err := grpcServer.Serve(conn); err != nil {
 		log.Fatalf("failed to serve grpc on port %d", a.port)
 	}
 }

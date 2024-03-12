@@ -8,15 +8,17 @@ import (
 	"github.com/Njunwa1/fupi.tz/urlclick/internal/ports"
 	"github.com/Njunwa1/fupi.tz/urlclick/internal/utils"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/metadata"
 	"log"
 	"log/slog"
+	"os"
 	"sync"
 )
 
 type payload struct {
-	request  *clicks.UrlClickRequest
-	metadata metadata.MD
+	Request  *clicks.UrlClickRequest `json:"request"`
+	Metadata metadata.MD             `json:"metadata"`
 }
 
 type Adapter struct {
@@ -24,11 +26,17 @@ type Adapter struct {
 	db   ports.DBPort
 }
 
+var (
+	NumberOfWorkers = 5
+)
+
 func NewAdapter(rabbitUrl string, db ports.DBPort) *Adapter {
 	conn, err := amqp.Dial(rabbitUrl)
 	if err != nil {
-		log.Printf("Cannot dial amqp %s", err)
+		slog.Error("Cannot dial amqp", "err", err)
+		os.Exit(1)
 	}
+	slog.Info("Connected to RabbitMQ", "url", rabbitUrl)
 	return &Adapter{conn: conn, db: db}
 }
 
@@ -44,7 +52,7 @@ func (a *Adapter) ConsumeClickEvent() error {
 		return err
 	}
 
-	_, err = ch.QueueDeclare(
+	q, err := ch.QueueDeclare(
 		"url_clicked", // name
 		false,         // durable
 		false,         // delete when unused
@@ -60,22 +68,22 @@ func (a *Adapter) ConsumeClickEvent() error {
 
 	// Create a worker pool
 	var wg sync.WaitGroup
-	messageChannel := make(chan payload, 5)
+	messageChannel := make(chan payload, NumberOfWorkers)
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= NumberOfWorkers; i++ {
 		wg.Add(1)
 		go a.worker(i, messageChannel, &wg)
 	}
 
 	// Consume messages
 	msgs, err := ch.Consume(
-		"url_clicked", // Queue name
-		"",            // Consumer tag
-		false,         // AutoAck
-		false,         // Exclusive
-		false,         // NoLocal
-		false,         // NoWait
-		nil,           // Arguments
+		q.Name, // Queue name
+		"",     // Consumer tag
+		false,  // AutoAck
+		false,  // Exclusive
+		false,  // NoLocal
+		false,  // NoWait
+		nil,    // Arguments
 	)
 	if err != nil {
 		log.Fatal("Failed to register a consumer:", err)
@@ -88,9 +96,9 @@ func (a *Adapter) ConsumeClickEvent() error {
 			err := json.Unmarshal(msg.Body, &message)
 			if err != nil {
 				slog.Error("Error decoding message:", "error", err)
-				// Optionally handle the decoding error
 			} else {
 				messageChannel <- message
+				slog.Info("Received message:", "request", message.Request, "metadata", message.Metadata)
 			}
 			// Acknowledge the message
 			_ = msg.Ack(false)
@@ -109,9 +117,9 @@ func (a *Adapter) worker(id int, messages <-chan payload, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for message := range messages {
-		log.Printf("Worker %d processing message: %s %s", id, message.request, message.metadata)
+		slog.Info("Worker processing message:", "worker", id, "request", message.Request, "metadata", message.Metadata)
 
-		click, err := a.ProcessRequestMetadata(message.metadata, message.request)
+		click, err := a.ProcessRequestMetadata(message.Metadata, message.Request)
 		if err != nil {
 			slog.Error("Error processing message: ", "err", err)
 		}
@@ -142,8 +150,9 @@ func (a *Adapter) ProcessRequestMetadata(md metadata.MD, request *clicks.UrlClic
 		latitude = record.Location.Latitude
 	}
 
+	urlIdObjectId, _ := primitive.ObjectIDFromHex(request.UrlID)
 	click := domain.NewUrlClick(
-		request.UrlID,
+		urlIdObjectId,
 		userAgent,
 		ipAdr,
 		"",

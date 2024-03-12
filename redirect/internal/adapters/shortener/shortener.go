@@ -24,8 +24,8 @@ func NewAdapter(shortenerServiceUrl string) *Adapter {
 	return &Adapter{shortener: client}
 }
 
-func (s *Adapter) GetUrlByShortKey(ctx context.Context, shortKey string) (*url.CreateUrlResponse, error) {
-	urlObject, err := s.shortener.GetUrlByKey(ctx, &url.GetUrlByKeyRequest{ShortUrl: shortKey})
+func (a *Adapter) GetUrlByShortKey(ctx context.Context, shortKey string) (*url.CreateUrlResponse, error) {
+	urlObject, err := a.shortener.GetUrlByKey(ctx, &url.GetUrlByKeyRequest{ShortUrl: shortKey})
 	if err != nil {
 		return nil, err
 	}

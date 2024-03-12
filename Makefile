@@ -22,3 +22,13 @@ protoc:
               --grpc-gateway_opt generate_unbound_methods=true \
               ./**/*.proto
 	@echo "Done."
+
+rabbit-start:
+	@echo "Starting RabbitMQ..."
+	@docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq
+	@echo "Done."
+
+redis-start:
+	@echo "Starting Redis..."
+	@docker run -d --name some-redis -p 6379:6379 redis
+	@echo "Done."
