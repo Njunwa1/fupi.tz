@@ -30,7 +30,8 @@ func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlReques
 		return &url.UrlResponse{}, fmt.Errorf("failed to get user id from context")
 	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
-	expiryAt, err := time.Parse("2006-01-02", request.ExpiryAt)
+	slog.Info("expiry date", request.ExpiryAt)
+	expiryAt, err := time.Parse(time.RFC3339, request.ExpiryAt)
 	if err != nil {
 		slog.Error("Error while parsing expiry date", "err", err)
 		return &url.UrlResponse{}, err
@@ -62,21 +63,21 @@ func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlReques
 	} else {
 		newUrl.Short = newUrl.CustomAlias
 	}
-	err = a.db.SaveUrl(ctx, *newUrl)
+	insertedUrl, err := a.db.SaveUrl(ctx, *newUrl)
 	if err != nil {
 		log.Println("Failed to save url to database: ", err)
 		return &url.UrlResponse{}, err
 	}
 	return &url.UrlResponse{
-		Id:          newUrl.Id.Hex(),
-		Type:        newUrl.UrlType.Name,
-		WebUrl:      newUrl.WebUrl,
-		IosUrl:      newUrl.IOSUrl,
-		AndroidUrl:  newUrl.AndroidUrl,
-		Short:       newUrl.Short,
-		ExpiryAt:    newUrl.ExpiryAt.Format("2006-01-02"),
-		CustomAlias: newUrl.CustomAlias,
-		Password:    newUrl.Password,
+		Id:          insertedUrl.Id.Hex(),
+		Type:        insertedUrl.UrlType.Name,
+		WebUrl:      insertedUrl.WebUrl,
+		IosUrl:      insertedUrl.IOSUrl,
+		AndroidUrl:  insertedUrl.AndroidUrl,
+		Short:       insertedUrl.Short,
+		ExpiryAt:    insertedUrl.ExpiryAt.Format(time.RFC3339),
+		CustomAlias: insertedUrl.CustomAlias,
+		Password:    insertedUrl.Password,
 	}, nil
 }
 
@@ -102,20 +103,27 @@ func (a *Application) GetUrlByShortUrl(ctx context.Context, shortUrl string) (*u
 }
 
 func (a *Application) GetAllUserUrls(ctx context.Context, request *url.UserUrlsRequest) (*url.UserUrlsResponse, error) {
-	userHexID, err := primitive.ObjectIDFromHex(request.GetUserId())
+	userHex, ok := ctx.Value(utils.UserIDKey{}).(string)
+	if !ok {
+		slog.Error("Failed to get user id from context")
+		return &url.UserUrlsResponse{}, fmt.Errorf("failed to get user id from context")
+	}
+	userObjectID, err := primitive.ObjectIDFromHex(userHex)
 	if err != nil {
 		slog.Error("Error while converting Object ID", "err", err)
 		return &url.UserUrlsResponse{}, err
 	}
-	urls, err := a.db.GetAllUserUrls(ctx, &userHexID)
+
+	urls, err := a.db.GetAllUserUrls(ctx, &userObjectID)
 	if err != nil {
 		slog.Error("Error while converting Object ID", "err", err)
 		return &url.UserUrlsResponse{}, err
 	}
 	var userUrlsResponse []*url.UrlResponse
+
 	for _, urlData := range urls {
 		urlDataId := urlData.Id.Hex()
-		expiryAt := urlData.ExpiryAt.Format("2006-01-02")
+		expiryAt := urlData.ExpiryAt.Format(time.RFC3339)
 		response := url.UrlResponse{
 			Id:          urlDataId,
 			Short:       urlData.Short,
@@ -124,10 +132,11 @@ func (a *Application) GetAllUserUrls(ctx context.Context, request *url.UserUrlsR
 			AndroidUrl:  urlData.AndroidUrl,
 			Type:        urlData.UrlType.Name,
 			CustomAlias: urlData.CustomAlias,
+			Password:    urlData.Password,
 			ExpiryAt:    expiryAt,
 			QrcodeUrl:   urlData.QrCodeUrl,
 		}
-		_ = append(userUrlsResponse, &response)
+		userUrlsResponse = append(userUrlsResponse, &response)
 	}
 	return &url.UserUrlsResponse{Urls: userUrlsResponse}, nil
 }

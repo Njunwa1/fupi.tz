@@ -29,6 +29,7 @@ message UrlResponse {
   string password = 8;
   string expiryAt = 9;
   string qrcodeUrl = 10;
+  string createdAt = 11;
 }
 
 message UrlByKeyRequest {

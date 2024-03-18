@@ -8,9 +8,21 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"log/slog"
 )
 
+var accessibleRoles = map[string][]string{
+	//"/Url/GetUrlByKey":    {"admin", "user"}, this is public url
+	"/Url/CreateShortUrl": {"admin", "user"},
+	"/Url/GetAllUserUrls": {"admin"},
+}
+
 func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	slog.Info("AuthInterceptor", "info", info.FullMethod)
+	roles, ok := accessibleRoles[info.FullMethod]
+	if !ok {
+		return handler(ctx, req)
+	}
 	md, _ := metadata.FromIncomingContext(ctx)
 	if len(md["authorization"]) == 0 {
 		return nil, status.Errorf(codes.Unauthenticated, "authorization token is not provided")
@@ -23,5 +35,8 @@ func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServe
 		return nil, status.Errorf(codes.Unauthenticated, "token is invalid")
 	}
 	ctx = context.WithValue(ctx, utils.UserIDKey{}, payload.UserID)
+	if !utils.Contains(roles, payload.Role) {
+		return nil, status.Errorf(codes.PermissionDenied, "you don't have permission to access this resource")
+	}
 	return handler(ctx, req)
 }

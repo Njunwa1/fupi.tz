@@ -41,13 +41,19 @@ func NewAdapter(dataSourceUrl string) (*Adapter, error) {
 	return &Adapter{Client: client}, nil
 }
 
-func (a *Adapter) SaveUrl(ctx context.Context, url domain.Url) error {
+func (a *Adapter) SaveUrl(ctx context.Context, url domain.Url) (*domain.Url, error) {
 	collection := a.Client.Database("fupitz").Collection("urls")
-	_, err := collection.InsertOne(ctx, url)
+	result, err := collection.InsertOne(ctx, url)
 	if err != nil {
-		return err
+		return &domain.Url{}, err
 	}
-	return nil
+	urlID := result.InsertedID.(primitive.ObjectID)
+	var urlDoc domain.Url
+	err = collection.FindOne(ctx, bson.M{"_id": urlID}).Decode(&urlDoc)
+	if err != nil {
+		return &domain.Url{}, err
+	}
+	return &urlDoc, nil
 }
 
 func (a *Adapter) GetUrlByShortUrl(ctx context.Context, shortUrl string) (domain.Url, error) {
@@ -63,10 +69,12 @@ func (a *Adapter) GetUrlByShortUrl(ctx context.Context, shortUrl string) (domain
 
 func (a *Adapter) GetAllUserUrls(ctx context.Context, userId *primitive.ObjectID) ([]domain.Url, error) {
 	collection := a.Client.Database("fupitz").Collection("urls")
-	cursor, err := collection.Find(ctx, domain.Url{UserID: userId})
+	filter := bson.M{"user_id": userId}
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
+	defer cursor.Close(ctx)
 	var urls []domain.Url
 	if err = cursor.All(ctx, &urls); err != nil {
 		return nil, err

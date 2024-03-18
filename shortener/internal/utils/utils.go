@@ -44,3 +44,12 @@ func VerifyToken(token string) (*Payload, error) {
 	}
 	return payload, nil
 }
+
+func Contains(roles []string, role string) bool {
+	for _, r := range roles {
+		if r == role {
+			return true
+		}
+	}
+	return false
+}
