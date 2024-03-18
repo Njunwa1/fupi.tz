@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option go_package = "github.com/Njunwa1/fupi.tz/redirect/proto/redirect";
+
+import "google/api/annotations.proto";
+
+
+
+message RedirectRequest {
+  string shortUrl = 1;
+  string urlID = 2;
+}
+
+
+message RedirectResponse {
+  string id = 1;
+  string shortUrl = 2;
+  string webUrl = 3;
+  string iosUrl = 4;
+  string androidUrl = 5;
+  string password = 6;
+  string expiryAt = 7;
+  string customAlias = 8;
+  string type = 9;
+  string qrcodeUrl = 10;
+}
+
+
+
+service Redirect {
+  rpc Redirect(RedirectRequest) returns (RedirectResponse){
+    option (google.api.http) = {
+      get: "/api/v1/url/get/{shortUrl}"
+    };
+  }
+
+}
+
+

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/redirect"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"github.com/Njunwa1/fupitz-proto/golang/user"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -23,7 +24,7 @@ func main() {
 	if err := url.RegisterUrlHandlerFromEndpoint(context.Background(), mux, shortenerServiceAddr, opts); err != nil {
 		slog.Error("failed to register the shortener grpc gateway: %v", "err", err)
 	}
-	if err := clicks.RegisterUrlClicksHandlerFromEndpoint(context.Background(), mux, redirectServiceAddr, opts); err != nil {
+	if err := redirect.RegisterRedirectHandlerFromEndpoint(context.Background(), mux, redirectServiceAddr, opts); err != nil {
 		slog.Error("failed to register the redirect grpc gateway: ", "err", err)
 	}
 	if err := clicks.RegisterUrlClicksHandlerFromEndpoint(context.Background(), mux, AggregatorServiceAddr, opts); err != nil {

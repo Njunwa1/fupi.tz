@@ -3,7 +3,7 @@ package rabbitmq
 import (
 	"context"
 	"encoding/json"
-	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/redirect"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc/metadata"
 	"log"
@@ -16,8 +16,8 @@ type Adapter struct {
 }
 
 type payload struct {
-	Request  *clicks.UrlClickRequest `json:"request"`
-	Metadata metadata.MD             `json:"metadata"`
+	Request  *redirect.RedirectRequest `json:"request"`
+	Metadata metadata.MD               `json:"metadata"`
 }
 
 func NewAdapter(rabbitUrl string) *Adapter {
@@ -34,7 +34,7 @@ func (a *Adapter) initChannel() (*amqp.Channel, error) {
 	return a.conn.Channel()
 }
 
-func (a *Adapter) PublishClickEvent(ctx context.Context, request *clicks.UrlClickRequest, md metadata.MD) error {
+func (a *Adapter) PublishClickEvent(ctx context.Context, request *redirect.RedirectRequest, md metadata.MD) error {
 
 	ch, err := a.initChannel()
 	if err != nil {

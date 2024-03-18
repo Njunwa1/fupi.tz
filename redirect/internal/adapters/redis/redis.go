@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/redirect"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"github.com/redis/go-redis/v9"
 	"log"
@@ -30,14 +30,14 @@ func NewAdapter(dataSourceUrl string) *Adapter {
 	return &Adapter{Client: client}
 }
 
-func (a *Adapter) GetUrl(ctx context.Context, shortKey string) (*clicks.UrlClickResponse, error) {
+func (a *Adapter) GetUrl(ctx context.Context, shortKey string) (*redirect.RedirectResponse, error) {
 	val, err := a.Client.HGet(ctx, shortKey, shortKey).Result()
 
 	if err != nil {
 		return nil, err
 	}
 
-	var response clicks.UrlClickResponse
+	var response redirect.RedirectResponse
 	err = json.Unmarshal([]byte(val), &response)
 	if err != nil {
 		log.Fatalf("Error while unmarshaling %s", err)
@@ -49,7 +49,7 @@ func (a *Adapter) GetUrl(ctx context.Context, shortKey string) (*clicks.UrlClick
 func (a *Adapter) SetUrl(ctx context.Context, shortKey string, url *url.UrlResponse) error {
 
 	//Unlike GetUrl, SetUrl receives data from fn that returns url.CreateUrlResponse
-	urlData := &clicks.UrlClickResponse{
+	urlData := &redirect.RedirectResponse{
 		Id: url.Id, ShortUrl: url.Short, WebUrl: url.WebUrl, IosUrl: url.IosUrl,
 		AndroidUrl: url.AndroidUrl, Password: url.Password, ExpiryAt: url.ExpiryAt,
 		CustomAlias: url.CustomAlias, Type: url.Type,

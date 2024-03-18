@@ -4,8 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/Njunwa1/fupi.tz/redirect/internal/ports"
-	"github.com/Njunwa1/fupitz-proto/golang/clicks"
-	"github.com/Njunwa1/fupitz-proto/golang/url"
+	"github.com/Njunwa1/fupitz-proto/golang/redirect"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc/metadata"
 	"log/slog"
@@ -25,11 +24,11 @@ func NewApplication(
 	return &Application{shortener: shortener, redis: redis, rabbitmq: rabbitmq}
 }
 
-func (a *Application) CreateUrlClick(ctx context.Context, request *clicks.UrlClickRequest, md metadata.MD) (*clicks.UrlClickResponse, error) {
+func (a *Application) Redirect(ctx context.Context, request *redirect.RedirectRequest, md metadata.MD) (*redirect.RedirectResponse, error) {
 
 	// 1. get the url by short key from redis cache
-	var dbRes *url.UrlResponse
-	var returnRes *clicks.UrlClickResponse
+	//var dbRes *url.UrlResponse
+	//var returnRes *clicks.UrlClickResponse
 	res, err := a.redis.GetUrl(ctx, request.GetShortUrl())
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
@@ -37,43 +36,36 @@ func (a *Application) CreateUrlClick(ctx context.Context, request *clicks.UrlCli
 			slog.Info("Url not available in reddis cache, fetching from db")
 			dbRes, err := a.shortener.GetUrlByShortKey(ctx, request.ShortUrl)
 			if err != nil {
-				return &clicks.UrlClickResponse{}, err
+				return &redirect.RedirectResponse{}, err
 			}
-			_ = a.redis.SetUrl(ctx, request.ShortUrl, dbRes) // save the url in redis
+			_ = a.redis.SetUrl(ctx, request.ShortUrl, dbRes)
+			if dbRes != nil {
+				request.UrlID = dbRes.Id
+				slog.Info("Publishing message to RabbitMQ", "request", request, "metadata", md)
+				// 3. Send details to the message broker for saving the click
+				err = a.rabbitmq.PublishClickEvent(ctx, request, md)
+				if err != nil {
+					slog.Error("Failed to publish click event", "err", err)
+				}
+				return &redirect.RedirectResponse{
+					Id:          dbRes.Id,
+					WebUrl:      dbRes.WebUrl,
+					ShortUrl:    dbRes.Short,
+					AndroidUrl:  dbRes.AndroidUrl,
+					IosUrl:      dbRes.IosUrl,
+					ExpiryAt:    dbRes.ExpiryAt,
+					CustomAlias: dbRes.CustomAlias,
+					Password:    dbRes.Password,
+					Type:        dbRes.Type,
+				}, nil
+			}
 		} else {
-			return &clicks.UrlClickResponse{}, err
+			return &redirect.RedirectResponse{}, err
 		}
 	} else {
 		slog.Info("Url fetched from redis cache", "response", res)
 	}
-	if dbRes != nil {
-		request.UrlID = dbRes.Id
-		returnRes = &clicks.UrlClickResponse{
-			Id:          dbRes.Id,
-			WebUrl:      dbRes.WebUrl,
-			ShortUrl:    dbRes.Short,
-			AndroidUrl:  dbRes.AndroidUrl,
-			IosUrl:      dbRes.IosUrl,
-			ExpiryAt:    dbRes.ExpiryAt,
-			CustomAlias: dbRes.CustomAlias,
-			Password:    dbRes.Password,
-			Type:        dbRes.Type,
-		}
-	}
-	if res != nil {
-		request.UrlID = res.Id
-		returnRes = &clicks.UrlClickResponse{
-			Id:          res.Id,
-			WebUrl:      res.WebUrl,
-			ShortUrl:    res.ShortUrl,
-			AndroidUrl:  res.AndroidUrl,
-			IosUrl:      res.IosUrl,
-			ExpiryAt:    res.ExpiryAt,
-			CustomAlias: res.CustomAlias,
-			Password:    res.Password,
-			Type:        res.Type,
-		}
-	}
+	request.UrlID = res.Id
 
 	slog.Info("Publishing message to RabbitMQ", "request", request, "metadata", md)
 	// 3. Send details to the message broker for saving the click
@@ -82,5 +74,5 @@ func (a *Application) CreateUrlClick(ctx context.Context, request *clicks.UrlCli
 		slog.Error("Failed to publish click event", "err", err)
 	}
 
-	return returnRes, nil
+	return res, nil
 }

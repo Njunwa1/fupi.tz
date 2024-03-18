@@ -3,6 +3,7 @@ module github.com/Njunwa1/fupi.tz/redirect
 go 1.22.0
 
 require (
+	github.com/Njunwa1/fupitz-proto v0.0.0-20240318192803-0ceb3fbfb4e0
 	github.com/Njunwa1/fupitz-proto/golang/clicks v1.1.7
 	github.com/Njunwa1/fupitz-proto/golang/url v1.1.7
 	github.com/rabbitmq/amqp091-go v1.9.0

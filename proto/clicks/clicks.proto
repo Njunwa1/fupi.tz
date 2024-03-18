@@ -96,13 +96,6 @@ message UrlClicksAggregates{
 }
 
 service UrlClicks {
-  rpc Redirect(UrlClickRequest) returns (UrlClickResponse){
-    option (google.api.http) = {
-      get: "/api/v1/url/get/{shortUrl}"
-    };
-  }
-
-
   rpc GetUserUrlWithClicks(UserUrlRequest) returns (UrlClicksAggregates){
     option (google.api.http) = {
       get: "/api/v1/url/{shortUrl}/clicks"
