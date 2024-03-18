@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option go_package = "github.com/Njunwa1/fupi.tz/auth/proto/user";
+import "google/api/annotations.proto";
+
+message RegisterRequest {
+  string names = 1;
+  string company = 2;
+  string email = 3;
+  string password = 4;
+  string phoneNumber = 5;
+}
+
+message RegisterResponse {
+  string names = 1;
+  string company = 2;
+  string email = 3;
+  string hashedPassword = 4;
+  string phoneNumber = 5;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string accessToken = 1;
+}
+
+message VerifyTokenRequest{
+}
+
+message VerifyTokenResponse{
+  string accessToken = 1;
+}
+
+
+service User {
+  rpc Register(RegisterRequest) returns (RegisterResponse){
+    option (google.api.http) = {
+      post: "/api/v1/users/register"
+      body: "*"
+    };
+  }
+  rpc Login(LoginRequest) returns (LoginResponse){
+    option (google.api.http) = {
+      post: "/api/v1/users/login"
+      body: "*"
+    };
+  }
+
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse){
+    option (google.api.http) = {
+      post: "/api/v1/users/verify_token"
+      body: "*"
+    };
+  }
+}
+

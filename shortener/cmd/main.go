@@ -7,11 +7,8 @@ import (
 	"github.com/Njunwa1/fupi.tz/shortener/internal/adapters/grpc"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/adapters/keygen"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/api"
-	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 )
-
-var mongoClient *mongo.Client
 
 func main() {
 

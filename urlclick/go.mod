@@ -3,7 +3,7 @@ module github.com/Njunwa1/fupi.tz/urlclick
 go 1.22.0
 
 require (
-	github.com/Njunwa1/fupi.tz-proto/golang/clicks v1.1.4
+	github.com/Njunwa1/fupitz-proto/golang/clicks v1.1.7
 	github.com/mssola/useragent v1.0.0
 	github.com/oschwald/geoip2-golang v1.9.0
 	github.com/rabbitmq/amqp091-go v1.9.0

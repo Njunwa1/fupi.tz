@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UrlClicks_CreateUrlClick_FullMethodName = "/UrlClicks/CreateUrlClick"
+	UrlClicks_Redirect_FullMethodName             = "/UrlClicks/Redirect"
+	UrlClicks_GetUserUrlWithClicks_FullMethodName = "/UrlClicks/GetUserUrlWithClicks"
 )
 
 // UrlClicksClient is the client API for UrlClicks service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UrlClicksClient interface {
-	CreateUrlClick(ctx context.Context, in *UrlClickRequest, opts ...grpc.CallOption) (*UrlClickResponse, error)
+	Redirect(ctx context.Context, in *UrlClickRequest, opts ...grpc.CallOption) (*UrlClickResponse, error)
+	GetUserUrlWithClicks(ctx context.Context, in *UserUrlRequest, opts ...grpc.CallOption) (*UrlClicksAggregates, error)
 }
 
 type urlClicksClient struct {
@@ -37,9 +39,18 @@ func NewUrlClicksClient(cc grpc.ClientConnInterface) UrlClicksClient {
 	return &urlClicksClient{cc}
 }
 
-func (c *urlClicksClient) CreateUrlClick(ctx context.Context, in *UrlClickRequest, opts ...grpc.CallOption) (*UrlClickResponse, error) {
+func (c *urlClicksClient) Redirect(ctx context.Context, in *UrlClickRequest, opts ...grpc.CallOption) (*UrlClickResponse, error) {
 	out := new(UrlClickResponse)
-	err := c.cc.Invoke(ctx, UrlClicks_CreateUrlClick_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UrlClicks_Redirect_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *urlClicksClient) GetUserUrlWithClicks(ctx context.Context, in *UserUrlRequest, opts ...grpc.CallOption) (*UrlClicksAggregates, error) {
+	out := new(UrlClicksAggregates)
+	err := c.cc.Invoke(ctx, UrlClicks_GetUserUrlWithClicks_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +61,8 @@ func (c *urlClicksClient) CreateUrlClick(ctx context.Context, in *UrlClickReques
 // All implementations must embed UnimplementedUrlClicksServer
 // for forward compatibility
 type UrlClicksServer interface {
-	CreateUrlClick(context.Context, *UrlClickRequest) (*UrlClickResponse, error)
+	Redirect(context.Context, *UrlClickRequest) (*UrlClickResponse, error)
+	GetUserUrlWithClicks(context.Context, *UserUrlRequest) (*UrlClicksAggregates, error)
 	mustEmbedUnimplementedUrlClicksServer()
 }
 
@@ -58,8 +70,11 @@ type UrlClicksServer interface {
 type UnimplementedUrlClicksServer struct {
 }
 
-func (UnimplementedUrlClicksServer) CreateUrlClick(context.Context, *UrlClickRequest) (*UrlClickResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUrlClick not implemented")
+func (UnimplementedUrlClicksServer) Redirect(context.Context, *UrlClickRequest) (*UrlClickResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Redirect not implemented")
+}
+func (UnimplementedUrlClicksServer) GetUserUrlWithClicks(context.Context, *UserUrlRequest) (*UrlClicksAggregates, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserUrlWithClicks not implemented")
 }
 func (UnimplementedUrlClicksServer) mustEmbedUnimplementedUrlClicksServer() {}
 
@@ -74,20 +89,38 @@ func RegisterUrlClicksServer(s grpc.ServiceRegistrar, srv UrlClicksServer) {
 	s.RegisterService(&UrlClicks_ServiceDesc, srv)
 }
 
-func _UrlClicks_CreateUrlClick_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UrlClicks_Redirect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UrlClickRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UrlClicksServer).CreateUrlClick(ctx, in)
+		return srv.(UrlClicksServer).Redirect(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UrlClicks_CreateUrlClick_FullMethodName,
+		FullMethod: UrlClicks_Redirect_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlClicksServer).CreateUrlClick(ctx, req.(*UrlClickRequest))
+		return srv.(UrlClicksServer).Redirect(ctx, req.(*UrlClickRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UrlClicks_GetUserUrlWithClicks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserUrlRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UrlClicksServer).GetUserUrlWithClicks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UrlClicks_GetUserUrlWithClicks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UrlClicksServer).GetUserUrlWithClicks(ctx, req.(*UserUrlRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +133,12 @@ var UrlClicks_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UrlClicksServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateUrlClick",
-			Handler:    _UrlClicks_CreateUrlClick_Handler,
+			MethodName: "Redirect",
+			Handler:    _UrlClicks_Redirect_Handler,
+		},
+		{
+			MethodName: "GetUserUrlWithClicks",
+			Handler:    _UrlClicks_GetUserUrlWithClicks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

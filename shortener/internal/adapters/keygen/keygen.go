@@ -3,7 +3,7 @@ package keygen
 import (
 	"context"
 	"fmt"
-	"github.com/Njunwa1/fupi.tz-proto/golang/keygen"
+	"github.com/Njunwa1/fupitz-proto/golang/keygen"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"

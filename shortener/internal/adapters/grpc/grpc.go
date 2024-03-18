@@ -2,14 +2,14 @@ package grpc
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log/slog"
 	"time"
 )
 
-func (a Adapter) Create(ctx context.Context, request *url.CreateUrlRequest) (*url.CreateUrlResponse, error) {
+func (a Adapter) CreateShortUrl(ctx context.Context, request *url.UrlRequest) (*url.UrlResponse, error) {
 	slog.Info("Create Url request", "request", request)
 	urlType := domain.UrlType{Name: request.Type}
 	expiryAt, _ := time.Parse("2006-01-02", request.ExpiryAt)
@@ -19,7 +19,7 @@ func (a Adapter) Create(ctx context.Context, request *url.CreateUrlRequest) (*ur
 		request.Password,
 		request.QrcodeUrl,
 		request.WebUrl,
-		request.AppleUrl,
+		request.IosUrl,
 		request.AndroidUrl,
 		primitive.ObjectID{},
 		expiryAt,
@@ -28,27 +28,25 @@ func (a Adapter) Create(ctx context.Context, request *url.CreateUrlRequest) (*ur
 	if err != nil {
 		return nil, err
 	}
-	return &url.CreateUrlResponse{
+	return &url.UrlResponse{
 		Id:    result.Id.Hex(),
 		Short: result.Short,
 	}, nil
 }
 
-func (a Adapter) GetUrlByKey(ctx context.Context, request *url.GetUrlByKeyRequest) (*url.CreateUrlResponse, error) {
+func (a Adapter) GetUrlByKey(ctx context.Context, request *url.UrlByKeyRequest) (*url.UrlResponse, error) {
 	slog.Info("Get Url request", "request", request)
 	result, err := a.api.GetUrlByShortUrl(ctx, request.ShortUrl)
 	if err != nil {
 		return nil, err
 	}
-	return &url.CreateUrlResponse{
-		Id:          result.Id.Hex(),
-		Type:        result.UrlType.Name,
-		WebUrl:      result.WebUrl,
-		AppleUrl:    result.IOSUrl,
-		AndroidUrl:  result.AndroidUrl,
-		Short:       result.Short,
-		ExpiryAt:    result.ExpiryAt.Format("2006-01-02"),
-		CustomAlias: result.CustomAlias,
-		Password:    result.Password,
-	}, nil
+	return result, nil
+}
+
+func (a Adapter) GetAllUserUrls(ctx context.Context, request *url.UserUrlsRequest) (*url.UserUrlsResponse, error) {
+	urlsResponse, err := a.api.GetAllUserUrls(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return urlsResponse, nil
 }

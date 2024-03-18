@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
-	"github.com/Njunwa1/fupi.tz-proto/golang/url"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"log"
+	"log/slog"
 	"net/http"
 )
 
@@ -15,12 +16,16 @@ func main() {
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	shortenerServiceAddr := "localhost:50051"
 	redirectServiceAddr := "localhost:50053"
+	AggregatorServiceAddr := "localhost:50054"
 	mux := runtime.NewServeMux()
 	if err := url.RegisterUrlHandlerFromEndpoint(context.Background(), mux, shortenerServiceAddr, opts); err != nil {
-		log.Fatalf("failed to register the shortener grpc gateway: %v", err)
+		slog.Error("failed to register the shortener grpc gateway: %v", "err", err)
 	}
 	if err := clicks.RegisterUrlClicksHandlerFromEndpoint(context.Background(), mux, redirectServiceAddr, opts); err != nil {
-		log.Fatalf("failed to register the redirect grpc gateway: %v", err)
+		slog.Error("failed to register the redirect grpc gateway: ", "err", err)
+	}
+	if err := clicks.RegisterUrlClicksHandlerFromEndpoint(context.Background(), mux, AggregatorServiceAddr, opts); err != nil {
+		slog.Error("failed to register the Aggregator grpc gateway:", "err", err)
 	}
 
 	// start listening to requests from the gateway server

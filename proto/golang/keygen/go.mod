@@ -1,4 +1,4 @@
-module github.com/Njunwa1/fupi.tz-proto/golang/keygen
+module github.com/Njunwa1/fupitz-proto/golang/keygen
 
 go 1.22.0
 

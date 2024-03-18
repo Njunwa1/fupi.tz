@@ -1,4 +1,4 @@
-module github.com/Njunwa1/fupi.tz-proto/golang/clicks
+module github.com/Njunwa1/fupitz-proto/golang/clicks
 
 go 1.22.0
 

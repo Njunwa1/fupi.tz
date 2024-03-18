@@ -2,12 +2,12 @@ package grpc
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
 	"google.golang.org/grpc/metadata"
 	"log/slog"
 )
 
-func (a Adapter) CreateUrlClick(ctx context.Context, request *clicks.UrlClickRequest) (*clicks.UrlClickResponse, error) {
+func (a Adapter) Redirect(ctx context.Context, request *clicks.UrlClickRequest) (*clicks.UrlClickResponse, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	slog.Info("Recording url click", "request", request, "metadata", md)
 	res, err := a.api.CreateUrlClick(ctx, request, md)

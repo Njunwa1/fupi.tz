@@ -3,8 +3,8 @@ module github.com/Njunwa1/fupi.tz/shortener
 go 1.22.0
 
 require (
-	github.com/Njunwa1/fupi.tz-proto/golang/keygen v1.1.2
-	github.com/Njunwa1/fupi.tz-proto/golang/url v1.1.2
+	github.com/Njunwa1/fupitz-proto/golang/keygen v1.1.3
+	github.com/Njunwa1/fupitz-proto/golang/url v1.1.6
 	go.mongodb.org/mongo-driver v1.14.0
 	google.golang.org/grpc v1.62.1
 )

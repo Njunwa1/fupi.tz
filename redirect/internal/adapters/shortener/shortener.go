@@ -2,7 +2,7 @@ package shortener
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz-proto/golang/url"
+	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -24,8 +24,8 @@ func NewAdapter(shortenerServiceUrl string) *Adapter {
 	return &Adapter{shortener: client}
 }
 
-func (a *Adapter) GetUrlByShortKey(ctx context.Context, shortKey string) (*url.CreateUrlResponse, error) {
-	urlObject, err := a.shortener.GetUrlByKey(ctx, &url.GetUrlByKeyRequest{ShortUrl: shortKey})
+func (a *Adapter) GetUrlByShortKey(ctx context.Context, shortKey string) (*url.UrlResponse, error) {
+	urlObject, err := a.shortener.GetUrlByKey(ctx, &url.UrlByKeyRequest{ShortUrl: shortKey})
 	if err != nil {
 		return nil, err
 	}

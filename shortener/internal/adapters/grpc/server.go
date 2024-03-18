@@ -2,9 +2,9 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 	"github.com/Njunwa1/fupi.tz/shortener/config"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
+	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"

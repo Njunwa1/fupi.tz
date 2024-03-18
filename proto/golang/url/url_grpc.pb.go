@@ -19,20 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Url_Create_FullMethodName                 = "/Url/Create"
-	Url_GetUrlByKey_FullMethodName            = "/Url/GetUrlByKey"
-	Url_GetAllUrlsForUser_FullMethodName      = "/Url/GetAllUrlsForUser"
-	Url_GetAggregatedUrlClicks_FullMethodName = "/Url/GetAggregatedUrlClicks"
+	Url_CreateShortUrl_FullMethodName = "/Url/CreateShortUrl"
+	Url_GetUrlByKey_FullMethodName    = "/Url/GetUrlByKey"
+	Url_GetAllUserUrls_FullMethodName = "/Url/GetAllUserUrls"
 )
 
 // UrlClient is the client API for Url service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UrlClient interface {
-	Create(ctx context.Context, in *CreateUrlRequest, opts ...grpc.CallOption) (*CreateUrlResponse, error)
-	GetUrlByKey(ctx context.Context, in *GetUrlByKeyRequest, opts ...grpc.CallOption) (*CreateUrlResponse, error)
-	GetAllUrlsForUser(ctx context.Context, in *GetUrlsForUserRequest, opts ...grpc.CallOption) (*GetUrlsForUserResponse, error)
-	GetAggregatedUrlClicks(ctx context.Context, in *GetUrlByKeyRequest, opts ...grpc.CallOption) (*UrlClickAggregates, error)
+	CreateShortUrl(ctx context.Context, in *UrlRequest, opts ...grpc.CallOption) (*UrlResponse, error)
+	GetUrlByKey(ctx context.Context, in *UrlByKeyRequest, opts ...grpc.CallOption) (*UrlResponse, error)
+	GetAllUserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error)
 }
 
 type urlClient struct {
@@ -43,17 +41,17 @@ func NewUrlClient(cc grpc.ClientConnInterface) UrlClient {
 	return &urlClient{cc}
 }
 
-func (c *urlClient) Create(ctx context.Context, in *CreateUrlRequest, opts ...grpc.CallOption) (*CreateUrlResponse, error) {
-	out := new(CreateUrlResponse)
-	err := c.cc.Invoke(ctx, Url_Create_FullMethodName, in, out, opts...)
+func (c *urlClient) CreateShortUrl(ctx context.Context, in *UrlRequest, opts ...grpc.CallOption) (*UrlResponse, error) {
+	out := new(UrlResponse)
+	err := c.cc.Invoke(ctx, Url_CreateShortUrl_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *urlClient) GetUrlByKey(ctx context.Context, in *GetUrlByKeyRequest, opts ...grpc.CallOption) (*CreateUrlResponse, error) {
-	out := new(CreateUrlResponse)
+func (c *urlClient) GetUrlByKey(ctx context.Context, in *UrlByKeyRequest, opts ...grpc.CallOption) (*UrlResponse, error) {
+	out := new(UrlResponse)
 	err := c.cc.Invoke(ctx, Url_GetUrlByKey_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -61,18 +59,9 @@ func (c *urlClient) GetUrlByKey(ctx context.Context, in *GetUrlByKeyRequest, opt
 	return out, nil
 }
 
-func (c *urlClient) GetAllUrlsForUser(ctx context.Context, in *GetUrlsForUserRequest, opts ...grpc.CallOption) (*GetUrlsForUserResponse, error) {
-	out := new(GetUrlsForUserResponse)
-	err := c.cc.Invoke(ctx, Url_GetAllUrlsForUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *urlClient) GetAggregatedUrlClicks(ctx context.Context, in *GetUrlByKeyRequest, opts ...grpc.CallOption) (*UrlClickAggregates, error) {
-	out := new(UrlClickAggregates)
-	err := c.cc.Invoke(ctx, Url_GetAggregatedUrlClicks_FullMethodName, in, out, opts...)
+func (c *urlClient) GetAllUserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error) {
+	out := new(UserUrlsResponse)
+	err := c.cc.Invoke(ctx, Url_GetAllUserUrls_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -83,10 +72,9 @@ func (c *urlClient) GetAggregatedUrlClicks(ctx context.Context, in *GetUrlByKeyR
 // All implementations must embed UnimplementedUrlServer
 // for forward compatibility
 type UrlServer interface {
-	Create(context.Context, *CreateUrlRequest) (*CreateUrlResponse, error)
-	GetUrlByKey(context.Context, *GetUrlByKeyRequest) (*CreateUrlResponse, error)
-	GetAllUrlsForUser(context.Context, *GetUrlsForUserRequest) (*GetUrlsForUserResponse, error)
-	GetAggregatedUrlClicks(context.Context, *GetUrlByKeyRequest) (*UrlClickAggregates, error)
+	CreateShortUrl(context.Context, *UrlRequest) (*UrlResponse, error)
+	GetUrlByKey(context.Context, *UrlByKeyRequest) (*UrlResponse, error)
+	GetAllUserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error)
 	mustEmbedUnimplementedUrlServer()
 }
 
@@ -94,17 +82,14 @@ type UrlServer interface {
 type UnimplementedUrlServer struct {
 }
 
-func (UnimplementedUrlServer) Create(context.Context, *CreateUrlRequest) (*CreateUrlResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (UnimplementedUrlServer) CreateShortUrl(context.Context, *UrlRequest) (*UrlResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateShortUrl not implemented")
 }
-func (UnimplementedUrlServer) GetUrlByKey(context.Context, *GetUrlByKeyRequest) (*CreateUrlResponse, error) {
+func (UnimplementedUrlServer) GetUrlByKey(context.Context, *UrlByKeyRequest) (*UrlResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUrlByKey not implemented")
 }
-func (UnimplementedUrlServer) GetAllUrlsForUser(context.Context, *GetUrlsForUserRequest) (*GetUrlsForUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllUrlsForUser not implemented")
-}
-func (UnimplementedUrlServer) GetAggregatedUrlClicks(context.Context, *GetUrlByKeyRequest) (*UrlClickAggregates, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAggregatedUrlClicks not implemented")
+func (UnimplementedUrlServer) GetAllUserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllUserUrls not implemented")
 }
 func (UnimplementedUrlServer) mustEmbedUnimplementedUrlServer() {}
 
@@ -119,26 +104,26 @@ func RegisterUrlServer(s grpc.ServiceRegistrar, srv UrlServer) {
 	s.RegisterService(&Url_ServiceDesc, srv)
 }
 
-func _Url_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateUrlRequest)
+func _Url_CreateShortUrl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UrlRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UrlServer).Create(ctx, in)
+		return srv.(UrlServer).CreateShortUrl(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Url_Create_FullMethodName,
+		FullMethod: Url_CreateShortUrl_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlServer).Create(ctx, req.(*CreateUrlRequest))
+		return srv.(UrlServer).CreateShortUrl(ctx, req.(*UrlRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Url_GetUrlByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUrlByKeyRequest)
+	in := new(UrlByKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -150,43 +135,25 @@ func _Url_GetUrlByKey_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: Url_GetUrlByKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlServer).GetUrlByKey(ctx, req.(*GetUrlByKeyRequest))
+		return srv.(UrlServer).GetUrlByKey(ctx, req.(*UrlByKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Url_GetAllUrlsForUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUrlsForUserRequest)
+func _Url_GetAllUserUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserUrlsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UrlServer).GetAllUrlsForUser(ctx, in)
+		return srv.(UrlServer).GetAllUserUrls(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Url_GetAllUrlsForUser_FullMethodName,
+		FullMethod: Url_GetAllUserUrls_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlServer).GetAllUrlsForUser(ctx, req.(*GetUrlsForUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Url_GetAggregatedUrlClicks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUrlByKeyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UrlServer).GetAggregatedUrlClicks(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Url_GetAggregatedUrlClicks_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UrlServer).GetAggregatedUrlClicks(ctx, req.(*GetUrlByKeyRequest))
+		return srv.(UrlServer).GetAllUserUrls(ctx, req.(*UserUrlsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -199,20 +166,16 @@ var Url_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UrlServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _Url_Create_Handler,
+			MethodName: "CreateShortUrl",
+			Handler:    _Url_CreateShortUrl_Handler,
 		},
 		{
 			MethodName: "GetUrlByKey",
 			Handler:    _Url_GetUrlByKey_Handler,
 		},
 		{
-			MethodName: "GetAllUrlsForUser",
-			Handler:    _Url_GetAllUrlsForUser_Handler,
-		},
-		{
-			MethodName: "GetAggregatedUrlClicks",
-			Handler:    _Url_GetAggregatedUrlClicks_Handler,
+			MethodName: "GetAllUserUrls",
+			Handler:    _Url_GetAllUserUrls_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

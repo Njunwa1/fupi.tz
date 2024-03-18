@@ -3,7 +3,7 @@ module github.com/Njunwa1/keygen
 go 1.22.0
 
 require (
-	github.com/Njunwa1/fupi.tz-proto/golang/keygen v1.1.0
+	github.com/Njunwa1/fupitz-proto/golang/keygen v1.1.3
 	go.mongodb.org/mongo-driver v1.14.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.49.0
 	google.golang.org/grpc v1.62.1

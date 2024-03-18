@@ -1,5 +1,5 @@
-github.com/Njunwa1/fupi.tz-proto/golang/clicks v1.1.4 h1:0UJX+PYuKDT71Fo8OocgZei/RCemNncKByKIDTCO1Ec=
-github.com/Njunwa1/fupi.tz-proto/golang/clicks v1.1.4/go.mod h1:Opp/fWV0BTs/CERNCddKC/UvsK5gNnjXMgrryyVM9XA=
+github.com/Njunwa1/fupitz-proto/golang/clicks v1.1.7 h1:Vz8qs8gV2nKbwrkrRa27bDkTrQlCCmgsZFxJRMus950=
+github.com/Njunwa1/fupitz-proto/golang/clicks v1.1.7/go.mod h1:a0BtZ309PvFjFGpvy3yMphEhPBvxHHMhYM9WN9/rLQ0=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

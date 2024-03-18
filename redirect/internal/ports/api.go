@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
 	"google.golang.org/grpc/metadata"
 )
 

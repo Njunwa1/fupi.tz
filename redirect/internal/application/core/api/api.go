@@ -3,9 +3,9 @@ package api
 import (
 	"context"
 	"errors"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
-	"github.com/Njunwa1/fupi.tz-proto/golang/url"
 	"github.com/Njunwa1/fupi.tz/redirect/internal/ports"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc/metadata"
 	"log/slog"
@@ -28,9 +28,9 @@ func NewApplication(
 func (a *Application) CreateUrlClick(ctx context.Context, request *clicks.UrlClickRequest, md metadata.MD) (*clicks.UrlClickResponse, error) {
 
 	// 1. get the url by short key from redis cache
-	var dbRes *url.CreateUrlResponse
+	var dbRes *url.UrlResponse
 	var returnRes *clicks.UrlClickResponse
-	res, err := a.redis.GetUrl(ctx, request.ShortUrl)
+	res, err := a.redis.GetUrl(ctx, request.GetShortUrl())
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			// 2. if not in cache get it from db then set cache
@@ -53,7 +53,7 @@ func (a *Application) CreateUrlClick(ctx context.Context, request *clicks.UrlCli
 			WebUrl:      dbRes.WebUrl,
 			ShortUrl:    dbRes.Short,
 			AndroidUrl:  dbRes.AndroidUrl,
-			IosUrl:      dbRes.AppleUrl,
+			IosUrl:      dbRes.IosUrl,
 			ExpiryAt:    dbRes.ExpiryAt,
 			CustomAlias: dbRes.CustomAlias,
 			Password:    dbRes.Password,

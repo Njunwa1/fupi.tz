@@ -2,13 +2,14 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/Njunwa1/fupi.tz-proto/golang/keygen"
+	"github.com/Njunwa1/fupitz-proto/golang/keygen"
 	"github.com/Njunwa1/keygen/config"
 	"github.com/Njunwa1/keygen/internal/ports"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
+	"log/slog"
 	"net"
 )
 
@@ -40,6 +41,8 @@ func (a Adapter) Run() {
 	if config.GetEnv() == "development" {
 		reflection.Register(grpcServer)
 	}
+
+	slog.Info("Starting keygen service on port", "port", a.port)
 
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatal("Failed to serve grpc on port", a.port)

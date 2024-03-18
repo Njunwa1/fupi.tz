@@ -3,7 +3,7 @@ package rabbitmq
 import (
 	"context"
 	"encoding/json"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc/metadata"
 	"log"

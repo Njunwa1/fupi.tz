@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
-	"github.com/Njunwa1/fupi.tz-proto/golang/url"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"log/slog"
@@ -46,16 +46,22 @@ func (a *Adapter) GetUrl(ctx context.Context, shortKey string) (*clicks.UrlClick
 	return &response, nil
 }
 
-func (a *Adapter) SetUrl(ctx context.Context, shortKey string, url *url.CreateUrlResponse) error {
-	jsonData, err := json.Marshal(url)
+func (a *Adapter) SetUrl(ctx context.Context, shortKey string, url *url.UrlResponse) error {
+
+	//Unlike GetUrl, SetUrl receives data from fn that returns url.CreateUrlResponse
+	urlData := &clicks.UrlClickResponse{
+		Id: url.Id, ShortUrl: url.Short, WebUrl: url.WebUrl, IosUrl: url.IosUrl,
+		AndroidUrl: url.AndroidUrl, Password: url.Password, ExpiryAt: url.ExpiryAt,
+		CustomAlias: url.CustomAlias, Type: url.Type,
+	}
+	jsonData, err := json.Marshal(urlData)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Error occured while marshalling data", "err", err)
 	}
 	err = a.Client.HSet(ctx, shortKey, shortKey, jsonData).Err()
 	if err != nil {
 		return err
 	}
-
 	// Set expiration for the entire hash
 	expiration := 10 * time.Minute
 	err = a.Client.Expire(ctx, shortKey, expiration).Err()

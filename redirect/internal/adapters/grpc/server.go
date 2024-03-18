@@ -2,10 +2,13 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
+	"github.com/Njunwa1/fupi.tz/redirect/config"
 	"github.com/Njunwa1/fupi.tz/redirect/internal/ports"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
+	"log/slog"
 	"net"
 )
 
@@ -29,7 +32,11 @@ func (a Adapter) Run() {
 	a.server = grpcServer
 	clicks.RegisterUrlClicksServer(grpcServer, a)
 
-	log.Printf("starting url service on port %d ...", a.port)
+	if config.GetEnv() == "development" {
+		reflection.Register(grpcServer)
+	}
+
+	slog.Info("starting url service on port  ...", "port", a.port)
 	if err := grpcServer.Serve(conn); err != nil {
 		log.Fatalf("failed to serve grpc on port %d", a.port)
 	}

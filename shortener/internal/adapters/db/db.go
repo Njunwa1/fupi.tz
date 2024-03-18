@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -58,4 +59,17 @@ func (a *Adapter) GetUrlByShortUrl(ctx context.Context, shortUrl string) (domain
 		return domain.Url{}, err
 	}
 	return result, nil
+}
+
+func (a *Adapter) GetAllUserUrls(ctx context.Context, userId *primitive.ObjectID) ([]domain.Url, error) {
+	collection := a.Client.Database("fupitz").Collection("urls")
+	cursor, err := collection.Find(ctx, domain.Url{UserID: userId})
+	if err != nil {
+		return nil, err
+	}
+	var urls []domain.Url
+	if err = cursor.All(ctx, &urls); err != nil {
+		return nil, err
+	}
+	return urls, nil
 }

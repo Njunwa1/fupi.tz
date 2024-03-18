@@ -2,7 +2,9 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"github.com/Njunwa1/fupi.tz/urlclick/internal/application/core/domain"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -46,4 +48,18 @@ func (a *Adapter) SaveUrlClick(ctx context.Context, click domain.UrlClick) error
 		return err
 	}
 	return nil
+}
+
+func (a *Adapter) GetUrlClickAggregates(ctx context.Context, request *clicks.UserUrlRequest) (*clicks.UrlClicksAggregates, error) {
+	collection := a.Client.Database("fupitz").Collection("clicks")
+	cursor, err := collection.Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	var results []*clicks.UrlClicksAggregates
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		return nil, err
+	}
+	fmt.Println("Results: ", results)
+	return results[0], nil
 }

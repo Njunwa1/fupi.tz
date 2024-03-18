@@ -3,14 +3,13 @@ package rabbitmq
 import (
 	"context"
 	"encoding/json"
-	"github.com/Njunwa1/fupi.tz-proto/golang/clicks"
 	"github.com/Njunwa1/fupi.tz/urlclick/internal/application/core/domain"
 	"github.com/Njunwa1/fupi.tz/urlclick/internal/ports"
 	"github.com/Njunwa1/fupi.tz/urlclick/internal/utils"
+	"github.com/Njunwa1/fupitz-proto/golang/clicks"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/metadata"
-	"log"
 	"log/slog"
 	"os"
 	"sync"
@@ -24,6 +23,7 @@ type payload struct {
 type Adapter struct {
 	conn *amqp.Connection
 	db   ports.DBPort
+	mu   sync.Mutex
 }
 
 var (
@@ -71,7 +71,7 @@ func (a *Adapter) ConsumeClickEvent() error {
 	messageChannel := make(chan payload, NumberOfWorkers)
 
 	for i := 1; i <= NumberOfWorkers; i++ {
-		wg.Add(1)
+		wg.Add(1) //counter++
 		go a.worker(i, messageChannel, &wg)
 	}
 
@@ -86,10 +86,12 @@ func (a *Adapter) ConsumeClickEvent() error {
 		nil,    // Arguments
 	)
 	if err != nil {
-		log.Fatal("Failed to register a consumer:", err)
+		slog.Error("Failed to register a consumer:", "err", err)
+		os.Exit(1)
 	}
 
 	// Start a goroutine to dispatch messages to workers
+	//msgs in channel type that can only receive data
 	go func() {
 		for msg := range msgs {
 			var message payload
@@ -97,13 +99,13 @@ func (a *Adapter) ConsumeClickEvent() error {
 			if err != nil {
 				slog.Error("Error decoding message:", "error", err)
 			} else {
-				messageChannel <- message
-				slog.Info("Received message:", "request", message.Request, "metadata", message.Metadata)
+				messageChannel <- message //Send message to chan
+				slog.Info("Received Click message:", "shortUrl", message.Request.ShortUrl)
 			}
 			// Acknowledge the message
 			_ = msg.Ack(false)
 		}
-		close(messageChannel) // Close the channel when no more messages are expected
+		defer close(messageChannel) // Close the channel when no more messages are expected
 	}()
 
 	// Wait for all workers to finish
@@ -114,20 +116,23 @@ func (a *Adapter) ConsumeClickEvent() error {
 
 // worker is a goroutine that processes messages from the RabbitMQ queue
 func (a *Adapter) worker(id int, messages <-chan payload, wg *sync.WaitGroup) {
-	defer wg.Done()
+	defer wg.Done() // --counter
 
 	for message := range messages {
-		slog.Info("Worker processing message:", "worker", id, "request", message.Request, "metadata", message.Metadata)
+		slog.Info("Worker processing message:", "worker", id, "shortUrl", message.Request.ShortUrl)
 
 		click, err := a.ProcessRequestMetadata(message.Metadata, message.Request)
 		if err != nil {
 			slog.Error("Error processing message: ", "err", err)
 		}
+		//a.mu.Lock()
 		err = a.db.SaveUrlClick(context.Background(), click)
 		if err != nil {
 			slog.Error("Error saving message to the database: ", "err", err)
 		}
 	}
+	//defer a.mu.Unlock()
+
 }
 
 func (a *Adapter) ProcessRequestMetadata(md metadata.MD, request *clicks.UrlClickRequest) (domain.UrlClick, error) {
