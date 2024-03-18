@@ -9,12 +9,12 @@ import (
 
 func (a Adapter) Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse, error) {
 	// md, _ := metadata.FromIncomingContext(ctx)
-	res, err := a.api.Login(ctx, request)
+	res, err := a.api.Login(ctx, request.GetEmail(), request.GetPassword())
 	if err != nil {
 		// slog.Error("Failed to create url click", "err", err)
 		return &user.LoginResponse{}, err
 	}
-	return res, nil
+	return &user.LoginResponse{AccessToken: res}, nil
 }
 
 func (a Adapter) Register(ctx context.Context, request *user.RegisterRequest) (*user.RegisterResponse, error) {
@@ -35,5 +35,5 @@ func (a Adapter) VerifyToken(ctx context.Context, request *user.VerifyTokenReque
 	if err != nil {
 		return &user.VerifyTokenResponse{}, err
 	}
-	return user.VerifyTokenResponse{accessToken: token}, nil
+	return &user.VerifyTokenResponse{AccessToken: token[0]}, nil
 }

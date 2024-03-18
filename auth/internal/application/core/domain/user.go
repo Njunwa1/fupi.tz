@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
@@ -10,7 +11,7 @@ type Role struct {
 }
 
 type User struct {
-	ID          string
+	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Names       string
 	Company     string
 	Email       string

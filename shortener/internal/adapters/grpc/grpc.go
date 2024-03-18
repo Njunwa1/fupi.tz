@@ -2,34 +2,18 @@ package grpc
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log/slog"
-	"time"
 )
 
 func (a Adapter) CreateShortUrl(ctx context.Context, request *url.UrlRequest) (*url.UrlResponse, error) {
 	slog.Info("Create Url request", "request", request)
-	urlType := domain.UrlType{Name: request.Type}
-	expiryAt, _ := time.Parse("2006-01-02", request.ExpiryAt)
-	newUrl := domain.NewUrl(
-		urlType,
-		request.CustomAlias,
-		request.Password,
-		request.QrcodeUrl,
-		request.WebUrl,
-		request.IosUrl,
-		request.AndroidUrl,
-		primitive.ObjectID{},
-		expiryAt,
-	) //returns an address
-	result, err := a.api.CreateShortUrl(ctx, *newUrl)
+	result, err := a.api.CreateShortUrl(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	return &url.UrlResponse{
-		Id:    result.Id.Hex(),
+		Id:    result.Id,
 		Short: result.Short,
 	}, nil
 }

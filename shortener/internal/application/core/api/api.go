@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/utils"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"log/slog"
+	"time"
 )
 
 type Application struct {
@@ -20,21 +23,61 @@ func NewApplication(db ports.DBPort, keygen ports.KeyGenPort) *Application {
 	return &Application{db: db, keygen: keygen}
 }
 
-func (a *Application) CreateShortUrl(ctx context.Context, url domain.Url) (domain.Url, error) {
-	//shortURL will equal CustomAlias if it is not empty
-	if url.CustomAlias == "" {
-		log.Println("Sending Original URL to shortening service", url)
-		url.Short, _ = a.keygen.GenerateShortUrlKey(ctx)
-		log.Println("Generated short url", url.Short)
-	} else {
-		url.Short = url.CustomAlias
+func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlRequest) (*url.UrlResponse, error) {
+	userID, ok := ctx.Value(utils.UserIDKey{}).(string)
+	if !ok {
+		slog.Error("Failed to get user id from context")
+		return &url.UrlResponse{}, fmt.Errorf("failed to get user id from context")
 	}
-	err := a.db.SaveUrl(ctx, url)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
+	expiryAt, err := time.Parse("2006-01-02", request.ExpiryAt)
+	if err != nil {
+		slog.Error("Error while parsing expiry date", "err", err)
+		return &url.UrlResponse{}, err
+	}
+	userIdHex, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		slog.Error("Error while converting Object ID", "err", err)
+		return &url.UrlResponse{}, err
+	}
+	newUrl := domain.NewUrl(
+		domain.UrlType{Name: request.Type},
+		request.CustomAlias,
+		string(hashedPassword),
+		request.QrcodeUrl,
+		request.WebUrl,
+		request.IosUrl,
+		request.AndroidUrl,
+		userIdHex,
+		expiryAt,
+	) //returns an address
+	//shortURL will equal CustomAlias if it is not empty
+	if newUrl.CustomAlias == "" {
+		newUrl.Short, err = a.keygen.GenerateShortUrlKey(ctx)
+		if err != nil {
+			log.Println("Failed to generate short url: ", err)
+			return &url.UrlResponse{}, err
+		}
+		log.Println("Generated short url", newUrl.Short)
+	} else {
+		newUrl.Short = newUrl.CustomAlias
+	}
+	err = a.db.SaveUrl(ctx, *newUrl)
 	if err != nil {
 		log.Println("Failed to save url to database: ", err)
-		return domain.Url{}, err
+		return &url.UrlResponse{}, err
 	}
-	return url, nil
+	return &url.UrlResponse{
+		Id:          newUrl.Id.Hex(),
+		Type:        newUrl.UrlType.Name,
+		WebUrl:      newUrl.WebUrl,
+		IosUrl:      newUrl.IOSUrl,
+		AndroidUrl:  newUrl.AndroidUrl,
+		Short:       newUrl.Short,
+		ExpiryAt:    newUrl.ExpiryAt.Format("2006-01-02"),
+		CustomAlias: newUrl.CustomAlias,
+		Password:    newUrl.Password,
+	}, nil
 }
 
 func (a *Application) GetUrlByShortUrl(ctx context.Context, shortUrl string) (*url.UrlResponse, error) {

@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/Njunwa1/fupi.tz/auth/internal/application/core/domain"
 	"github.com/Njunwa1/fupi.tz/auth/internal/ports"
+	"github.com/Njunwa1/fupitz-proto/golang/user"
+	"golang.org/x/crypto/bcrypt"
 	"log/slog"
 )
 
@@ -16,26 +18,31 @@ func NewApplication(db ports.DBPort) *Application {
 	return &Application{db: db}
 }
 
-func (a *Application) Register(ctx context.Context, user domain.User) (domain.User, error) {
-	hashedPassword, err := user.HashPassword(user.Password)
+func (a *Application) Register(ctx context.Context, request *user.RegisterRequest) (*user.RegisterResponse, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
 		slog.Error("Error while hashing password: ", err)
-		return domain.User{}, err
+		return &user.RegisterResponse{}, err
 	}
 	newUser := domain.NewUser(
-		user.Names,
-		user.Company,
-		hashedPassword,
-		user.Email,
-		user.PhoneNumber,
-		user.Role,
+		request.Names,
+		request.Company,
+		string(hashedPassword),
+		request.Email,
+		request.PhoneNumber,
+		domain.Role{Name: "user"},
 	)
 	err = a.db.SaveUser(ctx, *newUser)
 	if err != nil {
 		slog.Error("Error while saving user: ", err)
-		return domain.User{}, err
+		return &user.RegisterResponse{}, err
 	}
-	return *newUser, nil
+	return &user.RegisterResponse{
+		Names:       newUser.Names,
+		Company:     newUser.Company,
+		Email:       newUser.Email,
+		PhoneNumber: newUser.PhoneNumber,
+	}, nil
 }
 
 func (a *Application) Login(ctx context.Context, email, password string) (string, error) {
@@ -48,7 +55,7 @@ func (a *Application) Login(ctx context.Context, email, password string) (string
 	if err != nil {
 		return "", err
 	}
-	token, err := a.maker.CreateToken(user.ID, user.Role.Name, 24)
+	token, err := a.maker.CreateToken(user.ID.Hex(), user.Role.Name, 24)
 	if err != nil {
 		return "", err
 	}

@@ -40,3 +40,8 @@ func getEnvironmentValue(key string) string {
 
 	return os.Getenv(key)
 }
+
+func GetSymmetricKey() []byte {
+	//return getEnvironmentValue("SYMMETRIC_KEY")
+	return []byte("12345678901234567890123456789012")
+}

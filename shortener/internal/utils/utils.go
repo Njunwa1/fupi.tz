@@ -1,8 +1,9 @@
-package domain
+package utils
 
 import (
 	"errors"
-	"github.com/google/uuid"
+	"github.com/Njunwa1/fupi.tz/shortener/config"
+	"github.com/o1egl/paseto"
 	"time"
 )
 
@@ -11,6 +12,9 @@ var (
 	ErrInvalidToken = errors.New("token is invalid")
 	ErrExpiredToken = errors.New("token has expired")
 )
+
+// UserIDKey is the key for the user id in the context
+type UserIDKey struct{}
 
 // Payload represents the payload of the Paseto token
 type Payload struct {
@@ -21,24 +25,22 @@ type Payload struct {
 	Expiration time.Time `json:"exp"`
 }
 
-// NewPayload creates a new payload for the Paseto token
-func NewPayload(UserID, role string, duration time.Duration) (*Payload, error) {
-	tokenID, err := uuid.NewRandom()
-	if err != nil {
-		return nil, err
-	}
-	return &Payload{
-		ID:         tokenID.String(),
-		UserID:     UserID,
-		Role:       role,
-		IssuedAt:   time.Now(),
-		Expiration: time.Now().Add(duration),
-	}, nil
-}
-
 func (payload *Payload) Valid() error {
 	if time.Now().After(payload.Expiration) {
 		return ErrExpiredToken
 	}
 	return nil
+}
+
+func VerifyToken(token string) (*Payload, error) {
+	p := paseto.NewV2()
+	payload := &Payload{}
+	err := p.Decrypt(token, config.GetSymmetricKey(), payload, nil)
+	if err != nil {
+		return nil, ErrInvalidToken
+	}
+	if err := payload.Valid(); err != nil {
+		return nil, ErrExpiredToken
+	}
+	return payload, nil
 }

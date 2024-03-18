@@ -25,6 +25,7 @@ type Url struct {
 
 func NewUrl(urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, androidUrl string, userID primitive.ObjectID, expiryAt time.Time) *Url {
 	return &Url{
+		Short:       "",
 		WebUrl:      webUrl,
 		AndroidUrl:  androidUrl,
 		IOSUrl:      iOSUrl,

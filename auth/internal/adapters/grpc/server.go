@@ -3,6 +3,7 @@ package grpc
 import (
 	"fmt"
 	"github.com/Njunwa1/fupi.tz/auth/internal/ports"
+	"github.com/Njunwa1/fupitz-proto/golang/user"
 	"google.golang.org/grpc"
 	"log"
 	"log/slog"
