@@ -1,3 +1,5 @@
+github.com/Njunwa1/fupitz-proto v0.0.0-20240318111607-487b77d17b17 h1:1jM0aVpBLCkFR34bNUxYc75F1m3VbUcozaFRJOfOgO0=
+github.com/Njunwa1/fupitz-proto v0.0.0-20240318111607-487b77d17b17/go.mod h1:SmNUoEqaSvVL3decvb7PQSdu4RnM5CZL9z3ocVWp6j8=
 github.com/Njunwa1/fupitz-proto/golang/clicks v1.1.7 h1:Vz8qs8gV2nKbwrkrRa27bDkTrQlCCmgsZFxJRMus950=
 github.com/Njunwa1/fupitz-proto/golang/clicks v1.1.7/go.mod h1:a0BtZ309PvFjFGpvy3yMphEhPBvxHHMhYM9WN9/rLQ0=
 github.com/Njunwa1/fupitz-proto/golang/url v1.1.7 h1:1o/jcaUbB9vkrZb0XDOuXX2XFp4oxm4Rt3US7nRnupY=

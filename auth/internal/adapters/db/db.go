@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"github.com/Njunwa1/fupi.tz/auth/internal/application/core/domain"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -51,7 +52,7 @@ func (a *Adapter) SaveUser(ctx context.Context, user domain.User) error {
 func (a *Adapter) GetUserByEmail(ctx context.Context, email string) (domain.User, error) {
 	collection := a.Client.Database("fupitz").Collection("users")
 	var result domain.User
-	filter := domain.User{Email: email}
+	filter := bson.M{"email": email}
 	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return domain.User{}, err

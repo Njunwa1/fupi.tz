@@ -14,27 +14,25 @@ type Application struct {
 	maker ports.PasetoPort
 }
 
-func NewApplication(db ports.DBPort) *Application {
-	return &Application{db: db}
+func NewApplication(db ports.DBPort, pasetoMaker ports.PasetoPort) *Application {
+	return &Application{db: db, maker: pasetoMaker}
 }
 
 func (a *Application) Register(ctx context.Context, request *user.RegisterRequest) (*user.RegisterResponse, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
-		slog.Error("Error while hashing password: ", err)
 		return &user.RegisterResponse{}, err
 	}
 	newUser := domain.NewUser(
 		request.Names,
 		request.Company,
-		string(hashedPassword),
 		request.Email,
 		request.PhoneNumber,
+		string(hashedPassword),
 		domain.Role{Name: "user"},
 	)
 	err = a.db.SaveUser(ctx, *newUser)
 	if err != nil {
-		slog.Error("Error while saving user: ", err)
 		return &user.RegisterResponse{}, err
 	}
 	return &user.RegisterResponse{
@@ -46,16 +44,16 @@ func (a *Application) Register(ctx context.Context, request *user.RegisterReques
 }
 
 func (a *Application) Login(ctx context.Context, email, password string) (string, error) {
-	user, err := a.db.GetUserByEmail(ctx, email)
-	if err != nil {
-		slog.Error("Error while getting user by email: ", err)
-		return "", err
-	}
-	err = user.VerifyPassword(user.Password, password)
+	userAccount, err := a.db.GetUserByEmail(ctx, email)
 	if err != nil {
 		return "", err
 	}
-	token, err := a.maker.CreateToken(user.ID.Hex(), user.Role.Name, 24)
+	err = userAccount.VerifyPassword(userAccount.Password, password)
+	if err != nil {
+		return "", err
+	}
+	slog.Info("User", "user", userAccount.Role.Name, "logged in")
+	token, err := a.maker.CreateToken(userAccount.ID.Hex(), userAccount.Role.Name, 24)
 	if err != nil {
 		return "", err
 	}

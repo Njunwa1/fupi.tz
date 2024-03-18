@@ -5,13 +5,13 @@ import (
 	"errors"
 	"github.com/Njunwa1/fupitz-proto/golang/user"
 	"google.golang.org/grpc/metadata"
+	"log/slog"
 )
 
 func (a Adapter) Login(ctx context.Context, request *user.LoginRequest) (*user.LoginResponse, error) {
-	// md, _ := metadata.FromIncomingContext(ctx)
 	res, err := a.api.Login(ctx, request.GetEmail(), request.GetPassword())
 	if err != nil {
-		// slog.Error("Failed to create url click", "err", err)
+		slog.Error("Failed to Login User", "user", request.GetEmail(), "err", err)
 		return &user.LoginResponse{}, err
 	}
 	return &user.LoginResponse{AccessToken: res}, nil
@@ -20,6 +20,7 @@ func (a Adapter) Login(ctx context.Context, request *user.LoginRequest) (*user.L
 func (a Adapter) Register(ctx context.Context, request *user.RegisterRequest) (*user.RegisterResponse, error) {
 	res, err := a.api.Register(ctx, request)
 	if err != nil {
+		slog.Error("Failed to register User", "user", request.GetEmail(), "err", err)
 		return &user.RegisterResponse{}, err
 	}
 	return res, nil
