@@ -32,7 +32,7 @@ func NewPayload(UserID, role string, duration time.Duration) (*Payload, error) {
 		UserID:     UserID,
 		Role:       role,
 		IssuedAt:   time.Now(),
-		Expiration: time.Now().Add(duration),
+		Expiration: time.Now().Add(time.Hour * duration),
 	}, nil
 }
 
