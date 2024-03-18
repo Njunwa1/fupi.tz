@@ -6,7 +6,6 @@ import (
 	"github.com/Njunwa1/fupi.tz/auth/internal/ports"
 	"github.com/Njunwa1/fupitz-proto/golang/user"
 	"golang.org/x/crypto/bcrypt"
-	"log/slog"
 )
 
 type Application struct {
@@ -52,7 +51,6 @@ func (a *Application) Login(ctx context.Context, email, password string) (string
 	if err != nil {
 		return "", err
 	}
-	slog.Info("User", "user", userAccount.Role.Name, "logged in")
 	token, err := a.maker.CreateToken(userAccount.ID.Hex(), userAccount.Role.Name, 24)
 	if err != nil {
 		return "", err
