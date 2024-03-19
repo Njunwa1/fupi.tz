@@ -13,6 +13,7 @@ import (
 
 type Adapter struct {
 	conn *amqp.Connection
+	//mu   sync.Mutex
 }
 
 type payload struct {
@@ -69,6 +70,8 @@ func (a *Adapter) PublishClickEvent(ctx context.Context, request *redirect.Redir
 	}
 	slog.Info("Publishing JSON Data to RabbitMQ", "data", jsonData)
 
+	//a.mu.Lock()
+	//defer a.mu.Unlock()
 	err = ch.PublishWithContext(ctx,
 		"",     // exchange
 		q.Name, // routing key

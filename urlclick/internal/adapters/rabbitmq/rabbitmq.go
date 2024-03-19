@@ -23,7 +23,7 @@ type payload struct {
 type Adapter struct {
 	conn *amqp.Connection
 	db   ports.DBPort
-	mu   sync.Mutex
+	//mu   sync.Mutex
 }
 
 var (
@@ -76,6 +76,8 @@ func (a *Adapter) ConsumeClickEvent() error {
 	}
 
 	// Consume messages
+	//a.mu.Lock()
+	//defer a.mu.Unlock()
 	msgs, err := ch.Consume(
 		q.Name, // Queue name
 		"",     // Consumer tag

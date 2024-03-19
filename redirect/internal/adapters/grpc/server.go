@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/Njunwa1/fupi.tz/redirect/config"
 	"github.com/Njunwa1/fupi.tz/redirect/internal/ports"
-	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/redirect"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -16,7 +16,7 @@ type Adapter struct {
 	api    ports.APIPort
 	port   int
 	server *grpc.Server
-	clicks.UnimplementedUrlClicksServer
+	redirect.UnimplementedRedirectServer
 }
 
 func NewAdapter(api ports.APIPort, port int) *Adapter {
@@ -30,7 +30,7 @@ func (a Adapter) Run() {
 	}
 	grpcServer := grpc.NewServer()
 	a.server = grpcServer
-	clicks.RegisterUrlClicksServer(grpcServer, a)
+	redirect.RegisterRedirectServer(grpcServer, a)
 
 	if config.GetEnv() == "development" {
 		reflection.Register(grpcServer)

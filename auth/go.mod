@@ -3,7 +3,7 @@ module github.com/Njunwa1/fupi.tz/auth
 go 1.22.0
 
 require (
-	github.com/Njunwa1/fupitz-proto v0.0.0-20240318111607-487b77d17b17
+	github.com/Njunwa1/fupitz-proto/golang/user v1.1.0
 	github.com/google/uuid v1.6.0
 	github.com/o1egl/paseto v1.0.0
 	go.mongodb.org/mongo-driver v1.14.0
@@ -29,8 +29,7 @@ require (
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto v0.0.0-20240123012728-ef4313101c80 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240125205218-1f4bbc51befe // indirect
-	google.golang.org/protobuf v1.32.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240318140521-94a12d6c2237 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240314234333-6e1732d8331c // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 )
