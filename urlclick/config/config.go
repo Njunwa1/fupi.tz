@@ -40,3 +40,8 @@ func GetRabbitMQURL() string {
 	//return getEnvironmentValue("RABBITMQ_URL")
 	return "amqp://guest:guest@localhost:5672/"
 }
+
+func GetSymmetricKey() []byte {
+	//return getEnvironmentValue("SYMMETRIC_KEY")
+	return []byte("12345678901234567890123456789012")
+}

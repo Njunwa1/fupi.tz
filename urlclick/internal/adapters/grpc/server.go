@@ -30,7 +30,9 @@ func (a Adapter) Run() {
 		log.Fatalf("failed to listen on port %d, error: %v", a.port, err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(AuthInterceptor),
+	)
 	a.server = grpcServer
 	clicks.RegisterUrlClicksServer(grpcServer, a)
 
