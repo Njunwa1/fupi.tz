@@ -27,8 +27,6 @@ func NewApplication(
 func (a *Application) Redirect(ctx context.Context, request *redirect.RedirectRequest, md metadata.MD) (*redirect.RedirectResponse, error) {
 
 	// 1. get the url by short key from redis cache
-	//var dbRes *url.UrlResponse
-	//var returnRes *clicks.UrlClickResponse
 	res, err := a.redis.GetUrl(ctx, request.GetShortUrl())
 	if err != nil {
 		if errors.Is(err, redis.Nil) {

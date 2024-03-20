@@ -3,6 +3,7 @@ package shortener
 import (
 	"context"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -15,6 +16,7 @@ type Adapter struct {
 func NewAdapter(shortenerServiceUrl string) *Adapter {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	opts = append(opts, grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
 	conn, err := grpc.Dial(shortenerServiceUrl, opts...)
 	if err != nil {
 		log.Fatal("Failed to dial shortener service: ", err)

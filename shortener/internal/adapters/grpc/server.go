@@ -5,6 +5,7 @@ import (
 	"github.com/Njunwa1/fupi.tz/shortener/config"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -31,7 +32,10 @@ func (a Adapter) Run() {
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(AuthInterceptor),
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
+		grpc.ChainUnaryInterceptor(
+			AuthInterceptor,
+		),
 	)
 	a.server = grpcServer
 	url.RegisterUrlServer(grpcServer, a)

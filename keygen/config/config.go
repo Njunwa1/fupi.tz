@@ -40,3 +40,8 @@ func getEnvironmentValue(key string) string {
 
 	return os.Getenv(key)
 }
+
+func GetJaegerURL() string {
+	//return getEnvironmentValue("JAEGER_URL")
+	return "http://localhost:14278/api/traces"
+}

@@ -45,3 +45,7 @@ func GetSymmetricKey() []byte {
 	//return getEnvironmentValue("SYMMETRIC_KEY")
 	return []byte("12345678901234567890123456789012")
 }
+
+func GetJaegerURL() string {
+	return "http://localhost:14278/api/traces"
+}

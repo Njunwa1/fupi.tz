@@ -32,3 +32,29 @@ redis-start:
 	@echo "Starting Redis..."
 	@docker run -d --name some-redis -p 6379:6379 redis
 	@echo "Done."
+
+jaegar-start:
+	@echo "Starting Jaegar..."
+	@docker run -d --name jaeger \
+       -e METRICS_STORAGE_TYPE=prometheus \
+       -e PROMETHEUS_SERVER_URL=http://localhost:9090 \
+       -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+       -e PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR=true \
+       -e PROMETHEUS_QUERY_NAMESPACE=- \
+	   -e PROMETHEUS_QUERY_DURATION_UNIT=- \
+       -e PROMETHEUS_QUERY_NORMALIZE_CALLS=true \
+       -e PROMETHEUS_QUERY_NORMALIZE_DURATION=true \
+       -p 16686:16686 -p 14268:14268 -p 9411:9411 \
+       jaegertracing/all-in-one:latest
+	@echo "Done."
+
+prometheus-start:
+	@echo "Starting Prometheus..."
+	@docker run -d --name prometheus \
+		-v prometheus-data:/prometheus -p 9090:9090 \
+		prom/prometheus
+	@echo "Done."
+
+otel-collector:
+	@echo "Starting otel_collector..."
+	@docker run -d --name otel-collector otel/opentelemetry-collector-contrib:latest

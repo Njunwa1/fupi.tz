@@ -49,3 +49,7 @@ func GetPasetoSecret() []byte {
 	//return getEnvironmentValue("PASETO_SECRET")
 	return []byte("12345678901234567890123456789012")
 }
+
+func GetJaegerURL() string {
+	return "http://localhost:14278/api/traces"
+}

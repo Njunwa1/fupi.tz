@@ -49,3 +49,7 @@ func GetRabbitMQURL() string {
 	//return getEnvironmentValue("RABBITMQ_URL")
 	return "amqp://guest:guest@localhost:5672/"
 }
+
+func GetJaegerURL() string {
+	return "http://localhost:14278/api/traces"
+}

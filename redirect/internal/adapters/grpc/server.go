@@ -5,6 +5,7 @@ import (
 	"github.com/Njunwa1/fupi.tz/redirect/config"
 	"github.com/Njunwa1/fupi.tz/redirect/internal/ports"
 	"github.com/Njunwa1/fupitz-proto/golang/redirect"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -28,7 +29,9 @@ func (a Adapter) Run() {
 	if err != nil {
 		log.Fatalf("failed to listen on port %d, error: %v", a.port, err)
 	}
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
+	)
 	a.server = grpcServer
 	redirect.RegisterRedirectServer(grpcServer, a)
 
