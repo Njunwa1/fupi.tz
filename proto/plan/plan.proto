@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option go_package = "github.com/Njunwa1/fupi.tz/plan/proto/plan";
+
+import "google/api/annotations.proto";
+
+message Feature{
+
+}

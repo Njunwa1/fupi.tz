@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "github.com/Njunwa1/fupi.tz/subscription/proto/payment";
+
+import "google/api/annotations.proto";
+
+message PaymentRequest{
+  string subscriptionId = 1;
+  float amount = 2;
+  string currency = 3;
+  string paymentMethod = 4;
+}
+
+message PaymentResponse{
+  string Id = 1;
+  string subscriptionId = 2;
+  float amount = 3;
+  string currency = 4;
+  string paymentMethod = 5;
+}
+
+service Payment
