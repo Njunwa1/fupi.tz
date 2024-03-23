@@ -27,3 +27,12 @@ type Plan struct {
 	Price       float64            // Price of the plan
 	Features    Features           // Features of the plan
 }
+
+func NewPlan(name, description string, price float64, features Features) *Plan {
+	return &Plan{
+		Name:        name,
+		Description: description,
+		Price:       price,
+		Features:    features,
+	}
+}

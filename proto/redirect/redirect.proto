@@ -33,7 +33,6 @@ service Redirect {
       get: "/api/v1/url/get/{shortUrl}"
     };
   }
-
 }
 
 

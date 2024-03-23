@@ -19,4 +19,20 @@ message PaymentResponse{
   string paymentMethod = 5;
 }
 
-service Payment
+message Empty{}
+message UserPaymentsRequest{
+  string userId =1;
+}
+service Payment{
+  rpc CreatePayment(PaymentRequest) returns (PaymentResponse){}
+  rpc GetUserPayments(UserPaymentsRequest) returns (PaymentResponse){
+    option (google.api.http) = {
+      get: "/api/v1/payments/user/{userId}"
+    };
+  }
+  rpc GetAllPayments(Empty) returns (PaymentResponse){
+    option (google.api.http) = {
+      get: "/api/v1/payments"
+    };
+  }
+}
