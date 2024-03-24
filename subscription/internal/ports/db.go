@@ -1,11 +1,11 @@
 package ports
 
-import "context"
+import (
+	"context"
+	"github.com/Njunwa1/fupi.tz/subscription/internal/application/domain"
+)
 
 type DBPort interface {
-	SaveSubscription(ctx context.Context)
-	SavePayment(ctx context.Context)
-	GetPlans(ctx context.Context)
-	GetSubscriptions(ctx context.Context)
-	GetUserSubscriptionPlan(ctx context.Context)
+	CreateSubscription(ctx context.Context, subscription domain.Subscription) (domain.Subscription, error)
+	GetUserActiveSubscription(ctx context.Context, useId string) (domain.Subscription, error)
 }

@@ -1,11 +1,11 @@
 package ports
 
-import "context"
+import (
+	"context"
+	"github.com/Njunwa1/fupitz-proto/golang/subscription"
+)
 
 type APIPort interface {
-	CreateSubscription(ctx context.Context)
-	CreatePayment(ctx context.Context)
-	GetPlans(ctx context.Context)
-	GetSubscriptions(ctx context.Context)
-	GetUserSubscriptionPlan(ctx context.Context)
+	CreateSubscription(ctx context.Context, request *subscription.SubscriptionRequest) (*subscription.SubscriptionResponse, error)
+	GetUserActiveSubscriptions(ctx context.Context, request *subscription.UserActiveSubscriptionRequest) (*subscription.SubscriptionResponse, error)
 }
