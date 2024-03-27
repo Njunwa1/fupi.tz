@@ -25,11 +25,11 @@ type Plan struct {
 	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`        // Unique identifier for the plan
 	Name        string             `json:"name" bson:"name"`               // Name of the plan
 	Description string             `json:"description" bson:"description"` // Description of the plan
-	Price       float64            `json:"price" bson:"price"`             // Price of the plan
+	Price       float32            `json:"price" bson:"price"`             // Price of the plan
 	Features    Features           `json:"features" bson:"features"`       // Features of the plan
 }
 
-func NewPlan(name, description string, price float64, features Features) *Plan {
+func NewPlan(name, description string, price float32, features Features) *Plan {
 	return &Plan{
 		Name:        name,
 		Description: description,

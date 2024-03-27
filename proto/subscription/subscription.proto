@@ -7,12 +7,34 @@ import "google/api/annotations.proto";
 message SubscriptionRequest{
   string userId = 1;
   string planId = 2;
+  int32 durationInDays = 3;
+  string paymentMethod = 4;
+}
+
+message Features{
+  int32 qrCodes = 1;
+  int32 linkInBio = 2;
+  int32 customAlias = 3;
+  int32 customDomains = 4;
+  bool linkPassword = 5;
+  bool linkExpiration = 6;
+  bool linkStats = 7;
+  int32 linkStatsStore = 8;
+  bool utmBuilder = 9;
+  bool customQrCodes = 10;
+  int32 links = 11;
+}
+
+message Plan{
+  string name = 1;
+  string description = 2;
+  string price = 3;
+  Features features = 4;
 }
 
 message SubscriptionResponse{
   string id = 1;
-  string userId = 2;
-  string planId = 3;
+  Plan plan = 2;
 }
 
 message UserActiveSubscriptionRequest {

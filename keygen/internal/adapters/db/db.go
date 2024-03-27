@@ -5,6 +5,7 @@ import (
 	"github.com/Njunwa1/keygen/internal/application/core/domain"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
 	"log"
 	"time"
 )
@@ -20,7 +21,9 @@ func NewAdapter(dataSourceUrl string) (*Adapter, error) {
 
 	// Set client options
 	//"mongodb://localhost:27017"
-	clientOptions := options.Client().ApplyURI(dataSourceUrl)
+	clientOptions := options.Client()
+	clientOptions.ApplyURI(dataSourceUrl)
+	clientOptions.Monitor = otelmongo.NewMonitor()
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.Background(), clientOptions)

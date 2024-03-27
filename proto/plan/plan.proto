@@ -15,6 +15,7 @@ message Features{
   int32 linkStatsStore = 8;
   bool utmBuilder = 9;
   bool customQrCodes = 10;
+  int32 links = 11;
 }
 
 message PlanRequest{
@@ -32,7 +33,7 @@ message PlanResponse{
   string id =1;
   string name = 2;
   string description = 3;
-  string price = 4;
+  float price = 4;
   Features features = 5;
 }
 

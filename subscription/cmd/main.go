@@ -4,6 +4,8 @@ import (
 	"github.com/Njunwa1/fupi.tz/subscription/config"
 	"github.com/Njunwa1/fupi.tz/subscription/internal/adapters/db"
 	"github.com/Njunwa1/fupi.tz/subscription/internal/adapters/grpc"
+	"github.com/Njunwa1/fupi.tz/subscription/internal/adapters/payment"
+	"github.com/Njunwa1/fupi.tz/subscription/internal/adapters/plan"
 	"github.com/Njunwa1/fupi.tz/subscription/internal/application/core"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
@@ -31,10 +33,17 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
-
-	application := core.NewApplication(dbAdapter)
+	paymentAdapter, err := payment.NewAdapter(config.GetPaymentServiceUrl())
 	if err != nil {
-		slog.Info("Error while creating plans", "err", err)
+		slog.Info("Error while creating Payment adapter", "err", err)
+	}
+	planAdapter, err := plan.NewAdapter(config.GetPlanServiceUrl())
+	if err != nil {
+		slog.Info("Error while creating Plan adapter", "err", err)
+	}
+	application := core.NewApplication(dbAdapter, paymentAdapter, planAdapter)
+	if err != nil {
+		slog.Info("Error while creating ", "err", err)
 	}
 
 	grpcAdapter := grpc.NewAdapter(config.GetApplicationPort(), application)

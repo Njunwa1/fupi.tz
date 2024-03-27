@@ -28,6 +28,14 @@ func GetApplicationPort() int {
 	return port
 }
 
+func GetPaymentServiceUrl() string{
+	return "http://localhost:50058"
+}
+
+func GetPlanServiceUrl() string{
+	return "http://localhost:50058"
+}
+
 func getEnvironmentValue(key string) string {
 	if os.Getenv(key) == "" {
 		log.Fatalf("%s environment variable is missing.", key)

@@ -6,32 +6,41 @@ import (
 	"github.com/Njunwa1/fupi.tz/subscription/internal/ports"
 	"github.com/Njunwa1/fupitz-proto/golang/subscription"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"log/slog"
 	"time"
 )
 
 type Application struct {
-	db ports.DBPort
+	db      ports.DBPort
+	payment ports.PaymentPort
+	plan    ports.PlanPort
 }
 
-func NewApplication(db ports.DBPort) *Application {
-	return &Application{db: db}
+func NewApplication(db ports.DBPort, payment ports.PaymentPort, plan ports.PlanPort) *Application {
+	return &Application{db: db, payment: payment, plan: plan}
 }
 
 func (a *Application) CreateSubscription(ctx context.Context, request *subscription.SubscriptionRequest) (*subscription.SubscriptionResponse, error) {
 	duration := 30 * 24 * time.Hour // 30 days
 	userId, _ := primitive.ObjectIDFromHex(request.GetUserId())
-	planId, _ := primitive.ObjectIDFromHex(request.GetPlanId())
+	planResponse, _ := a.plan.GetPlan(ctx, request.GetPlanId())
+	plan := domain.PlanFromResponse(planResponse)
 	newSub := domain.NewSubscription(
-		userId, planId, duration,
+		userId, plan, duration,
 	)
 	sub, err := a.db.CreateSubscription(ctx, *newSub)
 	if err != nil {
 		return &subscription.SubscriptionResponse{}, err
 	}
+	_, err = a.payment.CreatePayment(ctx, sub)
+	if err != nil {
+		slog.Error("Could not make payment", "err", err)
+		return nil, err
+	}
 	return &subscription.SubscriptionResponse{
 		Id:     sub.ID.Hex(),
-		UserId: sub.PlanID.Hex(),
-		PlanId: sub.PlanID.Hex(),
+		UserId: sub.Plan.ID.Hex(),
+		PlanId: sub.Plan.ID.Hex(),
 	}, nil
 }
 
@@ -42,7 +51,7 @@ func (a *Application) GetUserActiveSubscriptions(ctx context.Context, request *s
 	}
 	return &subscription.SubscriptionResponse{
 		Id:     sub.ID.Hex(),
-		UserId: sub.PlanID.Hex(),
-		PlanId: sub.PlanID.Hex(),
+		UserId: sub.Plan.ID.Hex(),
+		PlanId: sub.Plan.ID.Hex(),
 	}, nil
 }
