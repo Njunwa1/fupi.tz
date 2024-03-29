@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/validation"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/utils"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
@@ -30,7 +31,6 @@ func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlReques
 		return &url.UrlResponse{}, fmt.Errorf("failed to get user id from context")
 	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
-	slog.Info("expiry date", request.ExpiryAt)
 	expiryAt, err := time.Parse(time.RFC3339, request.ExpiryAt)
 	if err != nil {
 		slog.Error("Error while parsing expiry date", "err", err)
@@ -39,6 +39,11 @@ func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlReques
 	userIdHex, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		slog.Error("Error while converting Object ID", "err", err)
+		return &url.UrlResponse{}, err
+	}
+	err = validation.ValidateUrlCreation(request)
+	if err != nil {
+		slog.Error("Error while validating Url request")
 		return &url.UrlResponse{}, err
 	}
 	newUrl := domain.NewUrl(
@@ -57,7 +62,7 @@ func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlReques
 		newUrl.Short, err = a.keygen.GenerateShortUrlKey(ctx)
 		if err != nil {
 			log.Println("Failed to generate short url: ", err)
-			return &url.UrlResponse{}, err
+			return &url.UrlResponse{}, validation.KeyGenerationError(err)
 		}
 		log.Println("Generated short url", newUrl.Short)
 	} else {
