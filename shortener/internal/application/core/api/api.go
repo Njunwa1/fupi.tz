@@ -9,7 +9,6 @@ import (
 	"github.com/Njunwa1/fupi.tz/shortener/internal/utils"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"log/slog"
 	"time"
@@ -25,38 +24,16 @@ func NewApplication(db ports.DBPort, keygen ports.KeyGenPort) *Application {
 }
 
 func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlRequest) (*url.UrlResponse, error) {
-	userID, ok := ctx.Value(utils.UserIDKey{}).(string)
-	if !ok {
-		slog.Error("Failed to get user id from context")
-		return &url.UrlResponse{}, fmt.Errorf("failed to get user id from context")
-	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
-	expiryAt, err := time.Parse(time.RFC3339, request.ExpiryAt)
-	if err != nil {
-		slog.Error("Error while parsing expiry date", "err", err)
-		return &url.UrlResponse{}, err
-	}
-	userIdHex, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		slog.Error("Error while converting Object ID", "err", err)
-		return &url.UrlResponse{}, err
-	}
-	err = validation.ValidateUrlCreation(request)
+	err := validation.ValidateUrlCreation(request)
 	if err != nil {
 		slog.Error("Error while validating Url request")
 		return &url.UrlResponse{}, err
 	}
-	newUrl := domain.NewUrl(
-		domain.UrlType{Name: request.Type},
-		request.CustomAlias,
-		string(hashedPassword),
-		request.QrcodeUrl,
-		request.WebUrl,
-		request.IosUrl,
-		request.AndroidUrl,
-		userIdHex,
-		expiryAt,
-	) //returns an address
+	newUrl, err := domain.CreateNewUrl(ctx, request)
+	if err != nil {
+		slog.Error("Error while Creating new url")
+		return &url.UrlResponse{}, err
+	}
 	//shortURL will equal CustomAlias if it is not empty
 	if newUrl.CustomAlias == "" {
 		newUrl.Short, err = a.keygen.GenerateShortUrlKey(ctx)

@@ -1,7 +1,13 @@
 package domain
 
 import (
+	"context"
+	"fmt"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/utils"
+	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
+	"log/slog"
 	"time"
 )
 
@@ -38,4 +44,35 @@ func NewUrl(urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, a
 		QrCodeUrl:   qrCodeUrl,
 		CreatedAt:   time.Now(),
 	}
+}
+
+func CreateNewUrl(ctx context.Context, request *url.UrlRequest) (*Url, error) {
+	userID, ok := ctx.Value(utils.UserIDKey{}).(string)
+	if !ok {
+		slog.Error("Failed to get user id from context")
+		return &Url{}, fmt.Errorf("failed to get user id from context")
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
+	expiryAt, err := time.Parse(time.RFC3339, request.ExpiryAt)
+	if err != nil {
+		slog.Error("Error while parsing expiry date", "err", err)
+		return &Url{}, err
+	}
+	userIdHex, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		slog.Error("Error while converting Object ID", "err", err)
+		return &Url{}, err
+	}
+
+	return NewUrl(
+		UrlType{Name: request.Type},
+		request.CustomAlias,
+		string(hashedPassword),
+		request.QrcodeUrl,
+		request.WebUrl,
+		request.IosUrl,
+		request.AndroidUrl,
+		userIdHex,
+		expiryAt,
+	), nil
 }
