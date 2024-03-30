@@ -25,12 +25,12 @@ protoc:
 
 rabbit-start:
 	@echo "Starting RabbitMQ..."
-	@docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq
+	@docker run -d --hostname fupitz-rabbitmq --name fupitz-rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq
 	@echo "Done."
 
 redis-start:
 	@echo "Starting Redis..."
-	@docker run -d --name some-redis -p 6379:6379 redis
+	@docker run -d --name fupitz-redis -p 6379:6379 redis
 	@echo "Done."
 
 jaegar-start:
