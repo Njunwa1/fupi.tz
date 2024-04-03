@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/domain"
+	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/qrcode"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/application/core/validation"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/ports"
 	"github.com/Njunwa1/fupi.tz/shortener/internal/utils"
@@ -45,6 +46,13 @@ func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlReques
 	} else {
 		newUrl.Short = newUrl.CustomAlias
 	}
+
+	//Generate Qrcode
+	qrCode := qrcode.SimpleQRCode{Content: newUrl.Short, Size: 256}
+	qrCodeUrl, err := qrCode.Generate(newUrl.Short)
+	newUrl.QrCodeUrl = qrCodeUrl
+
+	//Save to DB URL
 	insertedUrl, err := a.db.SaveUrl(ctx, *newUrl)
 	if err != nil {
 		log.Println("Failed to save url to database: ", err)
@@ -60,6 +68,7 @@ func (a *Application) CreateShortUrl(ctx context.Context, request *url.UrlReques
 		ExpiryAt:    insertedUrl.ExpiryAt.Format(time.RFC3339),
 		CustomAlias: insertedUrl.CustomAlias,
 		Password:    insertedUrl.Password,
+		QrcodeUrl:   insertedUrl.QrCodeUrl,
 	}, nil
 }
 

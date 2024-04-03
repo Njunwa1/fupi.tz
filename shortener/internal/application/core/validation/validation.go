@@ -65,7 +65,7 @@ func KeyGenerationError(error error) error {
 	}
 	badRequest := errdetails.BadRequest{}
 	badRequest.FieldViolations = append(badRequest.FieldViolations, fieldErr)
-	shortenerStatus := status.New(codes.InvalidArgument, "ShortUrl creation error")
+	shortenerStatus := status.New(codes.InvalidArgument, "ShortUrl keygen error")
 	statusDetails, _ := shortenerStatus.WithDetails(&badRequest)
 	return statusDetails.Err()
 }
