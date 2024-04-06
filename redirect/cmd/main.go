@@ -14,6 +14,7 @@ import (
 
 func main() {
 
+	//Tracing code
 	exp, err := exporter(config.GetJaegerURL())
 	if err != nil {
 		log.Fatal(err)
@@ -27,6 +28,7 @@ func main() {
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}))
 
+	//Initializing adapters for the application server
 	shortenerAdapter := shortener.NewAdapter(config.GetShortenerURL())
 	redisAdapter := redis.NewAdapter(config.GetRedisURL())
 	rabbitmqAdapter := rabbitmq.NewAdapter(config.GetRabbitMQURL())
