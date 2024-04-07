@@ -23,7 +23,6 @@ type payload struct {
 type Adapter struct {
 	conn *amqp.Connection
 	db   ports.DBPort
-	//mu   sync.Mutex
 }
 
 var (
@@ -68,6 +67,7 @@ func (a *Adapter) ConsumeClickEvent() error {
 
 	// Create a worker pool
 	var wg sync.WaitGroup
+	//buffered channel
 	messageChannel := make(chan payload, NumberOfWorkers)
 
 	for i := 1; i <= NumberOfWorkers; i++ {
@@ -76,8 +76,6 @@ func (a *Adapter) ConsumeClickEvent() error {
 	}
 
 	// Consume messages
-	//a.mu.Lock()
-	//defer a.mu.Unlock()
 	msgs, err := ch.Consume(
 		q.Name, // Queue name
 		"",     // Consumer tag
@@ -102,7 +100,7 @@ func (a *Adapter) ConsumeClickEvent() error {
 				slog.Error("Error decoding message:", "error", err)
 			} else {
 				messageChannel <- message //Send message to chan
-				slog.Info("Received Click message:", "shortUrl", message.Request.ShortUrl)
+				slog.Info("Received Click message for:", "shortUrl", message.Request.ShortUrl)
 			}
 			// Acknowledge the message
 			_ = msg.Ack(false)
@@ -127,20 +125,17 @@ func (a *Adapter) worker(id int, messages <-chan payload, wg *sync.WaitGroup) {
 		if err != nil {
 			slog.Error("Error processing message: ", "err", err)
 		}
-		//a.mu.Lock()
 		err = a.db.SaveUrlClick(context.Background(), click)
 		if err != nil {
 			slog.Error("Error saving message to the database: ", "err", err)
 		}
 	}
-	//defer a.mu.Unlock()
-
 }
 
 func (a *Adapter) ProcessRequestMetadata(md metadata.MD, request *clicks.UrlClickRequest) (domain.UrlClick, error) {
 	userAgent := utils.GetMD(md.Get("grpcgateway-user-agent"))
 	ipAdr := utils.GetMD(md.Get("x-forwarded-for"))
-
+	referer := utils.GetMD(md.Get("grpcgateway-referer"))
 	//TODO replace hard-code "" with ipAdr
 	var country string
 	var city string
@@ -162,7 +157,7 @@ func (a *Adapter) ProcessRequestMetadata(md metadata.MD, request *clicks.UrlClic
 		urlIdObjectId,
 		userAgent,
 		ipAdr,
-		"",
+		referer,
 		utils.DeviceFromUserAgent(userAgent),
 		utils.BrowserFromUserAgent(userAgent),
 		utils.OSFromUserAgent(userAgent),

@@ -20,6 +20,7 @@ type Url struct {
 	WebUrl      string              `json:"web_url" bson:"web_url"`
 	AndroidUrl  string              `json:"android_url" bson:"android_url"`
 	IOSUrl      string              `json:"ios_url" bson:"ios_url"`
+	Domain      string              `json:"domain" bson:"domain"`
 	Short       string              `json:"short" bson:"short"`
 	UserID      *primitive.ObjectID `json:"user_id" bson:"user_id,omitempty"`
 	UrlType     UrlType             `json:"url_type" bson:"url_type"`
@@ -30,7 +31,7 @@ type Url struct {
 	CreatedAt   time.Time           `json:"created_at" bson:"created_at"`
 }
 
-func NewUrl(urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, androidUrl string, userID primitive.ObjectID, expiryAt time.Time) *Url {
+func NewUrl(urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, androidUrl, domain string, userID primitive.ObjectID, expiryAt time.Time) *Url {
 	return &Url{
 		Short:       "",
 		WebUrl:      webUrl,
@@ -42,6 +43,7 @@ func NewUrl(urlType UrlType, customAlias, password, qrCodeUrl, webUrl, iOSUrl, a
 		Password:    password,
 		ExpiryAt:    expiryAt,
 		QrCodeUrl:   qrCodeUrl,
+		Domain:      domain,
 		CreatedAt:   time.Now(),
 	}
 }
@@ -72,6 +74,7 @@ func CreateNewUrl(ctx context.Context, request *url.UrlRequest) (*Url, error) {
 		request.WebUrl,
 		request.IosUrl,
 		request.AndroidUrl,
+		"fupi.tz", //replace with request.domain
 		userIdHex,
 		expiryAt,
 	), nil
