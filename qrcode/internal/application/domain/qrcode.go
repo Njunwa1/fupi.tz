@@ -32,3 +32,20 @@ type QRCode struct {
 	// UpdatedAt is the time the QR code was last updated
 	UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
 }
+
+// NewQrCode creates a new QR code
+func NewQrCode(destinationURL, shortURL, foregroundColor, backgroundColor, logo, frameColor, frameText string, branded bool, userID primitive.ObjectID) *QRCode {
+	return &QRCode{
+		DestinationURL:  destinationURL,
+		ShortURL:        shortURL,
+		ForegroundColor: foregroundColor,
+		BackgroundColor: backgroundColor,
+		Logo:            logo,
+		FrameColor:      frameColor,
+		FrameText:       frameText,
+		Branded:         false,
+		UserID:          primitive.ObjectID{},
+		CreatedAt:       time.Now(),
+		UpdatedAt:       time.Now(),
+	}
+}
