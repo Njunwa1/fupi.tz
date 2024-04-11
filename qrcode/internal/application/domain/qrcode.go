@@ -1,9 +1,14 @@
 package domain
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
 
 // QRCode is the domain model for a QR code
 type QRCode struct {
+	// ID is the unique identifier for the QR code
+	ID primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	// DestinationURL is the URL that the QR code will redirect to
 	DestinationURL string `json:"destination_url" bson:"destination_url"`
 	// ShortURL is the URL that the QR code will redirect to
@@ -20,6 +25,10 @@ type QRCode struct {
 	FrameText string `json:"frame_text" bson:"frame_text"`
 	// Branded is a boolean when true removes the watermark
 	Branded bool `json:"branded" bson:"branded"`
-	// ID is the unique identifier for the QR code
-	ID primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	//UserID is the ID of the user that created the QR code
+	UserID primitive.ObjectID `json:"user_id" bson:"user_id,omitempty"`
+	// CreatedAt is the time the QR code was created
+	CreatedAt time.Time `json:"created_at" bson:"created_at"`
+	// UpdatedAt is the time the QR code was last updated
+	UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
 }
