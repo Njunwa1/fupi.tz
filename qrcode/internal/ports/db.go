@@ -6,8 +6,8 @@ import (
 )
 
 type DBPort interface {
-	save(ctx context.Context, qrCode *domain.QRCode) (*domain.QRCode, error)
-	get(ctx context.Context, id string) (*domain.QRCode, error)
-	getAll(ctx context.Context) ([]*domain.QRCode, error)
-	update(ctx context.Context, qrCode *domain.QRCode) (*domain.QRCode, error)
+	Save(ctx context.Context, qrCode *domain.QRCode) (*domain.QRCode, error)
+	Get(ctx context.Context, id string) (*domain.QRCode, error)
+	GetAll(ctx context.Context) ([]*domain.QRCode, error)
+	Update(ctx context.Context, qrCode *domain.QRCode) (*domain.QRCode, error)
 }
