@@ -99,7 +99,9 @@ func (a *Adapter) ConsumeClickEvent() error {
 			if err != nil {
 				slog.Error("Error decoding message:", "error", err)
 			} else {
-				messageChannel <- message //Send message to chan
+				//Send message to buffered chan,
+				//if the buffered chan is full this will block
+				messageChannel <- message
 				slog.Info("Received Click message for:", "shortUrl", message.Request.ShortUrl)
 			}
 			// Acknowledge the message
