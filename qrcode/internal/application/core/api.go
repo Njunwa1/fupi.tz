@@ -12,8 +12,8 @@ import (
 )
 
 type Application struct {
-	db ports.DBPort
-	//keygen ports.KeyGenPort
+	db     ports.DBPort
+	keygen ports.KeyGenPort
 }
 
 func NewApplication(db ports.DBPort) *Application {
@@ -29,8 +29,8 @@ func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.Create
 	}
 
 	//Generate shortUrl key
-	//shortUrl, err := a.keygen.GenerateShortUrlKey(ctx)
-	//request.ShortUrl = shortUrl
+	shortUrl, err := a.keygen.GenerateShortUrlKey(ctx)
+	request.ShortUrl = shortUrl
 
 	//Generate Qrcode
 	qrCode := utils.SimpleQRCode{Content: request.GetShortUrl(), Size: 256}
