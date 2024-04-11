@@ -1,5 +1,7 @@
 github.com/Njunwa1/fupitz-proto/golang/qrcode v1.1.0 h1:dd2uqtiOSo3kxkfotB3wFcXg0emta/MJB6VNQHpf388=
 github.com/Njunwa1/fupitz-proto/golang/qrcode v1.1.0/go.mod h1:xWsXcz5DYt0IQLDQj8owYFVilLkTk/70sY2hRcImbB0=
+github.com/Njunwa1/fupitz-proto/golang/qrcode v1.1.1 h1:PNmZSHcM3kXya7rlXz2sBJxq3IWyhCji+NTneyvvgwk=
+github.com/Njunwa1/fupitz-proto/golang/qrcode v1.1.1/go.mod h1:xWsXcz5DYt0IQLDQj8owYFVilLkTk/70sY2hRcImbB0=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 h1:/c3QmbOGMGTOumP2iT/rCwB7b0QDGLKzqOmktBjT+Is=
