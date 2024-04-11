@@ -2,10 +2,12 @@ package core
 
 import (
 	"context"
+	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/domain"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/utils"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/validation"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/ports"
 	"github.com/Njunwa1/fupitz-proto/golang/qrcode"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log/slog"
 )
 
@@ -28,42 +30,49 @@ func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.Create
 
 	//Generate shortUrl key
 	//shortUrl, err := a.keygen.GenerateShortUrlKey(ctx)
+	//request.ShortUrl = shortUrl
 
 	//Generate Qrcode
 	qrCode := utils.SimpleQRCode{Content: request.GetShortUrl(), Size: 256}
 	fileName := request.GetShortUrl()
-	_, err = qrCode.Generate(fileName)
+	qrcodePath, err := qrCode.Generate(fileName)
 	if err != nil {
 		slog.Error("Error while generating QR code", err)
+		return &qrcode.QRCodeResponse{}, err
 	}
 
-	////Create new QRCode
-	//newQrCode := domain.NewQrCode(
-	//	request.GetDestinationUrl(),
-	//	request.GetShortUrl(),
-	//	request.GetBackgroundColor(),
-	//	request.GetForegroundColor(),
-	//	request.GetLogoUrl(),
-	//	request.GetFrameColor(),
-	//	request.GetFrameText(),
-	//	request.GetBranded(),
-	//	//request.GetQrcodeUrl(),
-	//	//request.GetUserId(),
-	//)
+	userId, _ := primitive.ObjectIDFromHex(request.GetUserId())
+
+	//Create new QRCode
+	newQrCode := domain.NewQrCode(
+		request.GetDestinationUrl(),
+		request.GetShortUrl(),
+		request.GetBackgroundColor(),
+		request.GetForegroundColor(),
+		request.GetLogoPath(),
+		request.GetFrameColor(),
+		request.GetFrameText(),
+		request.GetBranded(),
+		userId,
+	)
 
 	//Save to DB URL
-	//savedQrCode, err = a.db.Save(ctx, newQrCode)
+	savedQrCode, err := a.db.Save(ctx, newQrCode)
+	if err != nil {
+		slog.Error("Failed to save QRCode to database", err)
+		return &qrcode.QRCodeResponse{}, err
+	}
 
 	return &qrcode.QRCodeResponse{
-		DestinationUrl:  "",
-		ShortUrl:        "",
-		BackgroundColor: "",
-		ForegroundColor: "",
-		LogoPath:        "",
-		FrameColor:      "",
-		FrameText:       "",
-		Branded:         false,
-		QrcodeUrl:       "",
-		Id:              "",
+		DestinationUrl:  savedQrCode.DestinationURL,
+		ShortUrl:        savedQrCode.ShortURL,
+		BackgroundColor: savedQrCode.BackgroundColor,
+		ForegroundColor: savedQrCode.ForegroundColor,
+		LogoPath:        savedQrCode.Logo,
+		FrameColor:      savedQrCode.FrameColor,
+		FrameText:       savedQrCode.FrameText,
+		Branded:         savedQrCode.Branded,
+		QrcodeUrl:       qrcodePath,
+		Id:              savedQrCode.ID.Hex(),
 	}, nil
 }
