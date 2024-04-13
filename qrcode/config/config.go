@@ -33,6 +33,11 @@ func GetKeyGenServiceUrl() string {
 	return "localhost:50052"
 }
 
+func GetShortenerServiceUrl() string {
+	//return getEnvironmentValue("SHORTENER_SERVICE_URL")
+	return "localhost:50051"
+}
+
 func getEnvironmentValue(key string) string {
 	if os.Getenv(key) == "" {
 		log.Fatalf("%s environment variable is missing.", key)

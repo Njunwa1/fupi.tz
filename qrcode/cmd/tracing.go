@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	service     = "shortener"
+	service     = "qrcode"
 	environment = "dev"
 	id          = 1
 )

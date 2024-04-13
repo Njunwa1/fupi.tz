@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/domain"
+	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/core/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,6 +14,21 @@ import (
 
 type Adapter struct {
 	Client *mongo.Client
+}
+
+func (a *Adapter) Get(ctx context.Context, id string) (*domain.QRCode, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *Adapter) GetAll(ctx context.Context) ([]*domain.QRCode, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *Adapter) Update(ctx context.Context, qrCode *domain.QRCode) (*domain.QRCode, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func NewAdapter(dataSourceUrl string) (*Adapter, error) {
@@ -43,7 +58,7 @@ func NewAdapter(dataSourceUrl string) (*Adapter, error) {
 	return &Adapter{Client: client}, nil
 }
 
-func (a *Adapter) Save(ctx context.Context, qrcode domain.QRCode) (*domain.QRCode, error) {
+func (a *Adapter) Save(ctx context.Context, qrcode *domain.QRCode) (*domain.QRCode, error) {
 	collection := a.Client.Database("fupitz").Collection("qrcodes")
 	result, err := collection.InsertOne(ctx, qrcode)
 	if err != nil {

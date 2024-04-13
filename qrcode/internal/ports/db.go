@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/domain"
+	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/core/domain"
 )
 
 type DBPort interface {
