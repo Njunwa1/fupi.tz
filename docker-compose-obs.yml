@@ -1,18 +1,20 @@
 version: "3.5"
 services:
   minio:
-    image: docker.io/bitnami/minio:2022
+    image: quay.io/minio/minio
+    container_name: minio
+    restart: always
     ports:
-      - '9000:9000'
-      - '9001:9001'
-    networks:
-      - backend
-    volumes:
-      - 'minio_data:/data'
+    - "9000:9000"  # Expose MinIO server on port 9000
+    - "9001:9001"  # Expose MinIO server on port 9001
     environment:
-      - MINIO_ROOT_USER=your_username
-      - MINIO_ROOT_PASSWORD=your_pasword
-      - MINIO_DEFAULT_BUCKETS=your_bucket_name
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    networks:
+        - backend
+    volumes:
+      - minio_data:/data  # Persist MinIO data
+    command: server /data --console-address ":9001"
   jaeger:
     networks:
       - backend
@@ -66,3 +68,4 @@ networks:
 
 volumes:
   minio_data:
+    driver: local
