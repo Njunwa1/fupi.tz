@@ -1,5 +1,18 @@
 version: "3.5"
 services:
+  minio:
+    image: docker.io/bitnami/minio:2022
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - backend
+    volumes:
+      - 'minio_data:/data'
+    environment:
+      - MINIO_ROOT_USER=your_username
+      - MINIO_ROOT_PASSWORD=your_pasword
+      - MINIO_DEFAULT_BUCKETS=your_bucket_name
   jaeger:
     networks:
       - backend
@@ -50,3 +63,6 @@ services:
 
 networks:
   backend:
+
+volumes:
+  minio_data:
