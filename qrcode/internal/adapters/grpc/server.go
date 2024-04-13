@@ -2,10 +2,12 @@ package grpc
 
 import (
 	"fmt"
+	"github.com/Njunwa1/fupi.tz/qrcode/config"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/ports"
 	"github.com/Njunwa1/fupitz-proto/golang/qrcode"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 )
@@ -38,11 +40,11 @@ func (a Adapter) Run() {
 	a.server = grpcServer
 	qrcode.RegisterQRCodeServer(grpcServer, a)
 
-	//if config.GetEnv() == "development" {
-	//	reflection.Register(grpcServer)
-	//}
+	if config.GetEnv() == "development" {
+		reflection.Register(grpcServer)
+	}
 
-	log.Printf("starting url service on port %d ...", a.port)
+	log.Printf("starting qrcode service on port %d ...", a.port)
 	if err := grpcServer.Serve(listen); err != nil {
 		log.Fatalf("failed to serve grpc on port %d", a.port)
 	}
