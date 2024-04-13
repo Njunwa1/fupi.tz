@@ -51,21 +51,26 @@ func GetJaegerURL() string {
 }
 
 func QrCodesBucket() string {
+	//return getEnvironmentValue("QR_CODES_BUCKET")
 	return "qrcodes"
 }
 
 func GetMinioURL() string {
+	//return getEnvironmentValue("MINIO_URL")
 	return "localhost:9000"
 }
 
 func GetMinioAccessKey() string {
+	//return getEnvironmentValue("MINIO_ACCESS_KEY")
 	return "minioadmin"
 }
 
 func GetMinioSecretKey() string {
+	//return getEnvironmentValue("MINIO_SECRET_KEY")
 	return "minioadmin"
 }
 
 func GetMinioUseSSL() bool {
+	//return getEnvironmentValue("MINIO_USE_SSL")
 	return false
 }
