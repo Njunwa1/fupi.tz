@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"github.com/Njunwa1/fupi.tz/shortener/config"
+	"github.com/Njunwa1/fupi.tz/qrcode/config"
 	"github.com/o1egl/paseto"
 	"time"
 )
