@@ -7,6 +7,7 @@ require go.mongodb.org/mongo-driver v1.14.0
 require (
 	github.com/Njunwa1/fupitz-proto/golang/keygen v1.1.3 // indirect
 	github.com/Njunwa1/fupitz-proto/golang/qrcode v1.1.1 // indirect
+	github.com/Njunwa1/fupitz-proto/golang/url v1.1.6 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
