@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Njunwa1/fupitz-proto/golang/clicks"
+	"github.com/Njunwa1/fupitz-proto/golang/qrcode"
 	"github.com/Njunwa1/fupitz-proto/golang/redirect"
 	"github.com/Njunwa1/fupitz-proto/golang/url"
 	"github.com/Njunwa1/fupitz-proto/golang/user"
@@ -20,6 +21,7 @@ func main() {
 	redirectServiceAddr := "localhost:50053"
 	AggregatorServiceAddr := "localhost:50054"
 	AuthServiceAddr := "localhost:50055"
+	qrcodeServiceAddr := "localhost:50058"
 	mux := runtime.NewServeMux()
 
 	if err := user.RegisterUserHandlerFromEndpoint(context.Background(), mux, AuthServiceAddr, opts); err != nil {
@@ -36,6 +38,10 @@ func main() {
 
 	if err := clicks.RegisterUrlClicksHandlerFromEndpoint(context.Background(), mux, AggregatorServiceAddr, opts); err != nil {
 		slog.Error("failed to register the Aggregator grpc gateway:", "err", err)
+	}
+
+	if err := qrcode.RegisterQRCodeHandlerFromEndpoint(context.Background(), mux, qrcodeServiceAddr, opts); err != nil {
+		slog.Error("failed to register the qrcode grpc gateway:", "err", err)
 	}
 
 	// start listening to requests from the gateway server
