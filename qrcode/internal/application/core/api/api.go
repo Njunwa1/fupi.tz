@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"github.com/Njunwa1/fupi.tz/qrcode/config"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/core/domain"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/core/utils"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/core/validation"
@@ -13,12 +14,13 @@ import (
 )
 
 type Application struct {
-	db        ports.DBPort
-	shortener ports.ShortenerPort
+	db          ports.DBPort
+	shortener   ports.ShortenerPort
+	minioClient ports.MinioPort
 }
 
-func NewApplication(db ports.DBPort, shortener ports.ShortenerPort) *Application {
-	return &Application{db: db, shortener: shortener}
+func NewApplication(db ports.DBPort, shortener ports.ShortenerPort, minioClient ports.MinioPort) *Application {
+	return &Application{db: db, shortener: shortener, minioClient: minioClient}
 }
 
 func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.CreateQRCodeRequest) (*qrcode.QRCodeResponse, error) {
@@ -40,11 +42,16 @@ func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.Create
 
 	//Generate Qrcode
 	qrCode := utils.SimpleQRCode{Content: request.GetShortUrl(), Size: 256}
-	fileName := request.GetShortUrl()
-	qrcodePath, err := qrCode.Generate(fileName)
+	qrcodeBytes, err := qrCode.Generate()
 	if err != nil {
 		slog.Error("Error while generating QR code", err)
 		return &qrcode.QRCodeResponse{}, err
+	}
+
+	//Store QRCode in Minio
+	qrCodeUrl, err := a.minioClient.StoreQRCodeObject(ctx, config.QrCodesBucket(), request.GetShortUrl(), qrcodeBytes)
+	if err != nil {
+		return nil, err
 	}
 
 	userId, _ := primitive.ObjectIDFromHex(request.GetUserId())
@@ -78,7 +85,7 @@ func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.Create
 		FrameColor:      savedQrCode.FrameColor,
 		FrameText:       savedQrCode.FrameText,
 		Branded:         savedQrCode.Branded,
-		QrcodeUrl:       qrcodePath,
+		QrcodeUrl:       qrCodeUrl,
 		Id:              savedQrCode.ID.Hex(),
 	}, nil
 }

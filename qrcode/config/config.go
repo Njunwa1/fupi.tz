@@ -49,3 +49,23 @@ func GetSymmetricKey() []byte {
 func GetJaegerURL() string {
 	return "http://localhost:14278/api/traces"
 }
+
+func QrCodesBucket() string {
+	return "qrcodes"
+}
+
+func GetMinioURL() string {
+	return "localhost:9000"
+}
+
+func GetMinioAccessKey() string {
+	return "minioadmin"
+}
+
+func GetMinioSecretKey() string {
+	return "minioadmin"
+}
+
+func GetMinioUseSSL() bool {
+	return false
+}

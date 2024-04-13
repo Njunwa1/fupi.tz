@@ -5,6 +5,7 @@ import (
 	"github.com/Njunwa1/fupi.tz/qrcode/config"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/db"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/grpc"
+	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/minio"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/shortener"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/core/api"
 	"go.opentelemetry.io/otel"
@@ -39,8 +40,14 @@ func main() {
 	}()
 
 	shortenerAdapter := shortener.NewAdapter(config.GetShortenerServiceUrl())
+	minioAdapter := minio.NewAdapter(
+		config.GetMinioURL(),
+		config.GetMinioAccessKey(),
+		config.GetMinioSecretKey(),
+		config.GetMinioUseSSL(),
+	)
 
-	application := api.NewApplication(dbAdapter, shortenerAdapter)
+	application := api.NewApplication(dbAdapter, shortenerAdapter, minioAdapter)
 	grpcAdapter := grpc.NewAdapter(application, config.GetApplicationPort())
 	grpcAdapter.Run()
 }
