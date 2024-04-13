@@ -28,11 +28,6 @@ func GetApplicationPort() int {
 	return port
 }
 
-func GetKeyGenServiceUrl() string {
-	//return getEnvironmentValue("KEYGEN_SERVICE_URL")
-	return "localhost:50052"
-}
-
 func GetShortenerServiceUrl() string {
 	//return getEnvironmentValue("SHORTENER_SERVICE_URL")
 	return "localhost:50051"

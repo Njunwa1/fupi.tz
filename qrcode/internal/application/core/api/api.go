@@ -14,12 +14,11 @@ import (
 
 type Application struct {
 	db        ports.DBPort
-	keygen    ports.KeyGenPort
 	shortener ports.ShortenerPort
 }
 
-func NewApplication(db ports.DBPort, keygen ports.KeyGenPort, shortener ports.ShortenerPort) *Application {
-	return &Application{db: db, keygen: keygen, shortener: shortener}
+func NewApplication(db ports.DBPort, shortener ports.ShortenerPort) *Application {
+	return &Application{db: db, shortener: shortener}
 }
 
 func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.CreateQRCodeRequest) (*qrcode.QRCodeResponse, error) {
@@ -31,12 +30,13 @@ func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.Create
 	}
 
 	//Shorten URL
-	_, err = a.shortener.CreateShortUrl(ctx, &url.UrlRequest{
+	urlResponse, err := a.shortener.CreateShortUrl(ctx, &url.UrlRequest{
 		WebUrl: request.DestinationUrl,
 	})
 	if err != nil {
 		return &qrcode.QRCodeResponse{}, err
 	}
+	request.ShortUrl = urlResponse.Short
 
 	//Generate Qrcode
 	qrCode := utils.SimpleQRCode{Content: request.GetShortUrl(), Size: 256}

@@ -5,7 +5,6 @@ import (
 	"github.com/Njunwa1/fupi.tz/qrcode/config"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/db"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/grpc"
-	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/keygen"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/adapters/shortener"
 	"github.com/Njunwa1/fupi.tz/qrcode/internal/application/core/api"
 	"go.opentelemetry.io/otel"
@@ -39,10 +38,9 @@ func main() {
 		}
 	}()
 
-	keyGenAdapter := keygen.NewAdapter(config.GetKeyGenServiceUrl())
 	shortenerAdapter := shortener.NewAdapter(config.GetShortenerServiceUrl())
 
-	application := api.NewApplication(dbAdapter, keyGenAdapter, shortenerAdapter)
+	application := api.NewApplication(dbAdapter, shortenerAdapter)
 	grpcAdapter := grpc.NewAdapter(application, config.GetApplicationPort())
 	grpcAdapter.Run()
 }
