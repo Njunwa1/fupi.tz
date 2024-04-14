@@ -72,7 +72,7 @@ func (a *Application) GenerateQrCode(ctx context.Context, request *qrcode.Create
 	//Save to DB URL
 	savedQrCode, err := a.db.Save(ctx, newQrCode)
 	if err != nil {
-		slog.Error("Failed to save QRCode to database", err)
+		slog.Error("Failed to save QRCode to database", "err", err)
 		return &qrcode.QRCodeResponse{}, err
 	}
 

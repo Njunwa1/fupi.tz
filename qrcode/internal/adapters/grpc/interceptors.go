@@ -16,7 +16,7 @@ var accessibleRoles = map[string][]string{
 }
 
 func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	slog.Info("AuthInterceptor", "info", info.FullMethod)
+	slog.Info("AuthInterceptor", "method", info.FullMethod)
 	roles, ok := accessibleRoles[info.FullMethod]
 	if !ok {
 		return handler(ctx, req)

@@ -21,7 +21,7 @@ func main() {
 	redirectServiceAddr := "localhost:50053"
 	AggregatorServiceAddr := "localhost:50054"
 	AuthServiceAddr := "localhost:50055"
-	qrcodeServiceAddr := "localhost:50058"
+	qrcodeServiceAddr := "localhost:50059"
 	mux := runtime.NewServeMux()
 
 	if err := user.RegisterUserHandlerFromEndpoint(context.Background(), mux, AuthServiceAddr, opts); err != nil {
